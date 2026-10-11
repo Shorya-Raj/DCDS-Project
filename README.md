@@ -2,7 +2,7 @@
 
 This is the working DCDS mini-project: a small dashboard for browsing Maharashtra civil, road and infrastructure tender listings. It is built with Python and Streamlit. MySQL holds fields that are useful for filtering and joins; MongoDB holds the source-specific details for the same record.
 
-The repository is being built around the code and evidence that exist so far. It does not claim to be a complete archive of Maharashtra tenders, and a listed estimate is not an award amount or actual spending.
+This repository contains the code and evidence available so far. It is not a complete archive of Maharashtra tenders, and a listed estimate is not an award amount or actual spending.
 
 ## What works in the code
 
