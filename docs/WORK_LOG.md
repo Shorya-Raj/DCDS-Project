@@ -2,6 +2,24 @@
 
 This is the chronological record of implementation and verification work. The [tender-data audit](WEB_SCRAPING_AUDIT.md) holds the source history, workbook counts, provenance decisions and collection limits. Add an entry as each project action is completed.
 
+## 12 October 2026 — Tender book naming, copies, and archive
+
+### Review decisions
+
+- Named `01_CURRENT_Maharashtra_Works_TenderBook_Reviewed_2026-10-11.xlsx` as the current work and import-mapping book. It retains 1,619 unique Tender IDs; 1,572 official rows are SQL-ready, 2 remain held for missing detail-page evidence, and 45 third-party rows are excluded from the first import.
+- Kept the merged baseline, the expanded source book, and the combined 169-row source book because each supports comparison, source provenance, or the recorded merge.
+- Retired the old separate Tender247-only workbook from the active file list. It has the same 127 listing IDs and the same titles, locations, tender categories, values, EMDs, countdowns, and URLs as the Expanded book's `Earlier Index Leads`; four raw source-category values differ. The earlier workbook is retained in `Archive/Superseded/` rather than discarded.
+- Kept both 10 October workbook checkpoints and all prior inspection sidecars and the preview image in `Archive/`.
+
+### File actions and verification
+
+- Renamed the four active workbooks so their role and snapshot date are clear; created date-stamped, byte-identical backup copies of all four and verified their SHA-256 hashes.
+- Moved the two historical checkpoints, the superseded separate-source snapshot, and inspection artifacts into labeled archive folders. No workbook contents or Tender Log rows were edited, deleted, or merged.
+- Added `outputs/01a10826-579d-78f1-b00a-f33d738ff767/TENDER_BOOKS_INDEX.md` and updated the audit, extraction scripts, and workbook builders to use the new paths.
+- `verify_external_merge.py`: 169 source rows, 45 added third-party details, 16 matches, 108 undated leads, 1,619 unique records, no errors.
+- `verify_civil_workbook.py`: 107 captures compared, no errors. `verify_civil_remaining.py`: 1,236 compared, 5 overlaps, 1,574 official IDs, no errors.
+- Node syntax checks passed for all updated workbook builders. No database import was run.
+
 ## 12 October 2026 — Repository foundation
 
 ### Work completed
