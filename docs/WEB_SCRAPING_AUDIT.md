@@ -4,6 +4,52 @@
 **Coverage:** Maharashtra tender records, with a 2026 publication-date filter where the source supplied a publication date  
 **Status:** Historical work documented; the available 2026 collection is not a complete calendar-year archive.
 
+**File organization updated:** 12 October 2026.
+
+### Diversification scrape started (12 October 2026)
+
+To address the dashboard's current category concentration (the live dashboard screenshot shows 1,344 of 1,572 loaded listings under `Civil Works`), prepared a Maharashtra portal search for `Electrical Goods/Equipment`, with published dates 01/01/2026–12/10/2026 and no Tender Category restriction. The official portal requires a CAPTCHA before Search. Per the project extraction skill, it has not been solved or bypassed; no search results or records from this category have been captured yet. The search plan at `mahatenders-extract/artifacts/2026-10-12-diversification-search-plan.csv` tracks the chosen categories, date window, and capture state. The user must complete the visible CAPTCHA and submit this first search before extraction can proceed. The 127 previously captured Works detail pages remain separate and are not yet included in the master workbook or databases.
+
+### Official link capture and Tender ID reconciliation (12 October 2026)
+
+Rebuilt the link manifest from `WEB SCRAPED DATA MAHARASHTRA TENDERS (2).docx` against the current reviewed workbook, then used the project `mahatenders-extract` skill to open the **129 distinct links** that lacked an exact URL match. The official portal yielded **127 tender detail pages**. Two links (manifest sequences 248 and 304) were search-result pagination links rather than tender details, so they remain marked `unavailable` in the raw capture and must not be imported as tenders. No CAPTCHA appeared.
+
+The 127 detail pages have **127 distinct Tender IDs**; none occurs in the current workbook's Tender Log. Each page reports `Tender Category = Works` and a 2026 `Published Date`. Their official `Product Category` values are: Electrical Works **114**, General Repair Works **7**, Pipe Laying Works **1**, Plant Protection Input/Equipment Works **1**, and the portal-spelled Sanitory Works **4**. Document section headings are retained separately in the capture's `categories` field; they are not substituted for the portal's category label. Optional fields stay blank when not supplied by the page.
+
+The final ordered raw capture is `mahatenders-extract/artifacts/2026-10-12-pending-works-capture-all.jsonl` (SHA-256 `96c1b4bab69d25f1afcf121a0bf908e014442bd6fa75b4a4c19012ede81ce758`). The skill validator checked it against `2026-10-12-links-recheck-manifest.jsonl`: 129 capture rows, 127 captured, 2 unavailable, **0 pending links unattempted**, and **0 errors**. `2026-10-12-pending-links-reconciliation.csv` lists the link-by-link disposition. The master workbook SHA-256 remains `FAA13CA941E03F94621D1D27B85E9911036CBB6D9A20C00AE89885B0DDEF593A`; these 127 new captures are **staged for mapping and review**, not yet included in the 1,574 official workbook rows or the 1,572 imported database records. The two held workbook rows and record #1356's source discrepancy remain separate review items.
+
+### Link-document product-category check (12 October 2026)
+
+The latest supplied link document, `WEB SCRAPED DATA MAHARASHTRA TENDERS (2).docx`, already has sections for `ELECTRICAL WORKS` (123 link occurrences), `GENERAL REPAIR WORKS` (7), `PIPE LAYING WORKS` (1), `PLANT PROTECTION/INPUT EQUIPMENT WORKS` (1), and `SANITARY WORKS` (4). These headings record where the links were placed; they do not prove that the corresponding tender details were captured or that the portal used the same `Product Category` label.
+
+The saved 9 October manifest deduplicates those sections to 116, 7, 1, 1, and 4 distinct URLs respectively. All **129** were marked `already_recorded: false` by exact source-URL comparison at that time. The 12 October review of the current workbook found **1,574 included official rows** and no rows whose `Product Category` is Electrical Works, General Repair Works, Pipe Laying Works, Plant Protection Input/Equipment Works, or Sanitory Works. The workbook does contain 23 rows labeled `Electrical and Maintenance Works`, a distinct portal category. Its one link under the document heading `CIVIL WORKS - CANAL` was marked recorded, but the portal classified that tender as `Civil Works - Bridges`; the workbook has no row labeled `Civil Works - Canal`.
+
+These checks correct an earlier suggestion that Electrical Works, General Repair Works, Pipe Laying Works, and Civil Works - Canal had not been sought in the link document. At this earlier checkpoint, the URL comparison alone **did not prove the 129 tender IDs were absent** from the current workbook: later portal URLs can carry different session values. The official Tender ID reconciliation documented above resolves that uncertainty for the 127 actual detail pages.
+
+The live portal's `Product Category` dropdown was also reviewed on 12 October after selecting `Tender Category = Works`. The dropdown did not narrow to Works-specific labels; it still included goods and services labels. For a further Works collection, verify `Tender Category = Works` on each detail page. Once the 129 document links are reconciled, the most useful new category searches are `Solar Power Plants`, `Pumps/Motors`, `Water Equipments/ Meter/ Drilling/ Boring`, `Power/Energy Projects/Products`, and `Supply, Erection and Commissioning`. These are search candidates rather than an assertion that every result under each label is a Works tender. The document has no section for those labels, and the current included official workbook has no row under those exact product-category values.
+
+### Database handoff checkpoint (12 October 2026)
+
+The current reviewed-workbook snapshot is `01_CURRENT_Maharashtra_Works_TenderBook_Reviewed_2026-10-11.xlsx` (SHA-256 `FAA13CA941E03F94621D1D27B85E9911036CBB6D9A20C00AE89885B0DDEF593A`). A fresh dry run on 12 October reported **1,572 ready**, **2 included rows held** (Tender Log rows 9 and 10), and **45 rows excluded** because `Include? = No`. No rows were edited to produce this count. The flagged title/location discrepancy for record #1356 remains under source review; its text was not silently changed.
+
+The database design now uses `source_record_id` for the source's original ID and a shared key of `mahatenders:<Tender ID>` or `tender247:<listing-id>`. The deterministic 25-record pilot was imported twice into MySQL 8.4.9 and MongoDB 7.0.28. After both passes, each store held 25 matching records and `check_data.py` found no key or shared-field mismatches. One first-pass capitalization difference in a location label was documented and handled according to MySQL's case-insensitive lookup behavior; the source spelling remains in the MongoDB document. The sample's IDs are recorded in `IMPORT_PILOT_IDS_2026-10-12.csv`.
+
+At the end of the pilot sub-checkpoint, the full 1,572-record import, database query/CRUD demonstrations, and database-mode dashboard validation had not yet been performed. This report keeps that sequence clear; it does not change the historical collection totals or settle the source-review questions below.
+
+### Full accepted import checkpoint (12 October 2026)
+
+Step 5 loaded the 1,572 accepted rows from the same fingerprinted workbook. The two rows held for missing detail-page evidence and the 45 rows marked `Include? = No` stayed outside the accepted set. A source-to-database comparison with `check_data.py --expected-input` reported **1,572 records in MySQL**, **1,572 documents in MongoDB**, and **1,572 expected source records**. Both stores matched each other and the mapped workbook records across the shared fields and source-derived keys. The 25-row pilot is part of this set.
+
+At the end of Step 5, SQL query demonstrations, MongoDB CRUD/aggregation demonstrations, and the database-mode dashboard check remained open. Record #1356's title/location discrepancy remains flagged; loading the saved source value does not resolve it.
+
+### Database-operation demonstration checkpoint (12 October 2026)
+
+Step 6 ran all three SQL examples on the accepted set: 8 category groups, 75 tenders above the dataset-wide average estimated value, and 113 source-reported location labels with at least three tenders. Some labels (for example `Work` and `EE/EAST/MSIB`) should be reviewed before being described as standardized geographic locations. MongoDB read and category aggregation ran against the imported project collection. Create/read/update/delete were demonstrated with one temporary schema-valid document, which was deleted and confirmed absent afterward. There are 240 accepted records with no reported estimate; those values remain `NULL`. The remaining database workflow is Step 7, the dashboard check in database mode.
+
+### Database-mode dashboard checkpoint (12 October 2026)
+
+Step 7 selected the **MySQL + MongoDB** mode in the Streamlit app. The page displayed **1,572** matching records, and selecting a listing showed the MySQL-backed source identity and MongoDB-backed scope and eligibility detail. The source-plan checker passed again after the dashboard check. The temporary local server was stopped after verification. Step 8, final hand-in and demo preparation, remains open.
+
 ### Follow-up review of the tender records (11 October 2026)
 
 The earlier sections below describe the merged baseline workbook before the record-level follow-up. The reviewed working copy preserves the three original sheets and adds a `Record Review` tab. That workbook is retained outside this Git repository because its official detail URLs can contain browser-session query values.
@@ -13,7 +59,7 @@ The earlier sections below describe the merged baseline workbook before the reco
 - Correcting that schedule changes the number of included rows with closing dates before 10 October from 22 to **21**. Portal status remains a dated snapshot, not a current-status check.
 - Record #1356 (`2026_NMC_1342575_11`) has a captured portal title naming Satpur/P.No.09, while its own location and work description name Nashik East/P.No.14. The title is retained verbatim and flagged for notice-document review.
 - The `DCDS-Project` loader now maps `.xlsx` Tender Log rows by Tender ID. Its dry run on the reviewed copy reports **1,572 ready**, **2 held**, and **45 `Include? = No` rows excluded**. This validates field mapping only; MySQL/MongoDB import has not been run.
-- The 9 October `NEW ↓` manifest's 129 pending URLs remain a historical count and still need link-by-link reconciliation. Third-party leads remain separate; the 108 undated Tender247 leads and 45 unverified TenderShark details were not promoted.
+- The 9 October `NEW ↓` manifest's 129 pending URLs were a historical count; their link-by-link reconciliation was completed on 12 October as documented above. Third-party leads remain separate; the 108 undated Tender247 leads and 45 unverified TenderShark details were not promoted.
 
 The reviewed workbook fingerprint is SHA-256 `FAA13CA941E03F94621D1D27B85E9911036CBB6D9A20C00AE89885B0DDEF593A`.
 
@@ -193,7 +239,7 @@ Paths below are relative to the private parent `DCDS ESE` workspace, not this re
 | Evidence artifact | Workspace-relative path | SHA-256 |
 |---|---|---|
 | Final merged workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/02_BASELINE_Maharashtra_Works_TenderBook_Merged_2026-10-11.xlsx` | `20AF67F70ECE4DFECA9AD9CD7269847712857E391826969343873E2A729547B8` |
-| Latest reviewed working copy | outputs/01a10826-579d-78f1-b00a-f33d738ff767/01_CURRENT_Maharashtra_Works_TenderBook_Reviewed_2026-10-11.xlsx | FAA13CA941E03F94621D1D27B85E9911036CBB6D9A20C00AE89885B0DDEF593A |
+| Latest reviewed working copy | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/01_CURRENT_Maharashtra_Works_TenderBook_Reviewed_2026-10-11.xlsx` | `FAA13CA941E03F94621D1D27B85E9911036CBB6D9A20C00AE89885B0DDEF593A` |
 | Combined secondary-source workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/04_SOURCE_Maharashtra_TenderShark_Tender247_Combined_169_Rows_2026-10-05.xlsx` | `3F182E98BA37AF76333B16943F6902072CCC4B666A7C87F8B9A7FDC91049904A` |
 | Expanded pre-combination secondary-source workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/03_SOURCE_Maharashtra_TenderShark_Tender247_Expanded_2026-10-05.xlsx` | `0BE6CEA0E31C0F13DBDB2CD12276F32BE94722C21E812FA9DB4DE4CFC5FC1C74` |
 | 9 October `NEW ↓` URL manifest | `mahatenders-extract/artifacts/2026-10-09-after-new-links.jsonl` | `24F2CB96293FDD29D403282CAFD747FFA8B0C356258C3B48D4D77B6830DFAD76` |

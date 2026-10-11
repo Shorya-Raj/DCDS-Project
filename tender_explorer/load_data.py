@@ -42,17 +42,24 @@ def import_records(path: Path, dry_run: bool = False, sample_size: int | None = 
     if dry_run:
         print("Dry run only; no database connection was opened.")
         return len(records)
-    from tender_explorer.database import mysql_connection, mongo_collection, prepare_schema, upsert_tender
+    from tender_explorer.database import (
+        mysql_connection,
+        mongo_collection,
+        prepare_mongo_schema,
+        prepare_schema,
+        upsert_tender,
+    )
 
     sql = mysql_connection()
     mongo_client, details = mongo_collection()
     try:
         prepare_schema(sql)
+        prepare_mongo_schema(mongo_client)
         for record in records:
             try:
                 upsert_tender(sql, record)
-                sql.commit()
                 details.replace_one({"_id": record["tender_key"]}, document_for(record), upsert=True)
+                sql.commit()
             except Exception:
                 sql.rollback()
                 raise

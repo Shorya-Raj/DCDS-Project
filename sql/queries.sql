@@ -15,7 +15,7 @@ WHERE t.estimated_value_inr > (
 )
 ORDER BY t.estimated_value_inr DESC;
 
--- GROUP BY + HAVING: locations with at least three tenders.
+-- GROUP BY + HAVING: source-reported location labels with at least three tenders.
 SELECT l.name AS location, COUNT(*) AS tender_count
 FROM tenders AS t
 JOIN locations AS l ON l.location_id = t.location_id

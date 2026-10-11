@@ -16,6 +16,30 @@ MONEY_MULTIPLIERS = {
     "lac": Decimal("100000"),
     "k": Decimal("1000"),
 }
+SOURCE_KEY_PREFIXES = {
+    "MahaTenders official detail page": "mahatenders",
+    "Tender247 category listing": "tender247",
+}
+
+
+def make_tender_key(source_type: str, source_record_id: str) -> str:
+    """Build the same source-aware key for both databases and the dashboard."""
+    prefix = SOURCE_KEY_PREFIXES.get(source_type)
+    record_id = str(source_record_id).strip()
+    if not prefix:
+        raise ValueError(f"Unsupported tender source type: {source_type!r}")
+    if not record_id:
+        raise ValueError("Each record needs a non-empty source record ID")
+    return f"{prefix}:{record_id}"
+
+
+def _mongo_decimal(value: Decimal | None):
+    """Keep INR values exact when writing them to MongoDB."""
+    if value is None:
+        return None
+    from bson.decimal128 import Decimal128
+
+    return Decimal128(value)
 
 
 def parse_money(value: str | None) -> Decimal | None:
@@ -55,17 +79,19 @@ def normalize_record(raw: dict) -> dict:
         closing_date = date.fromisoformat(str(raw["closingDate"]))
     except (KeyError, TypeError, ValueError) as exc:
         raise ValueError(f"Listing {listing_id} has an invalid closing date") from exc
+    source_type = "Tender247 category listing"
     return {
-        "tender_key": f"tender247:{listing_id}",
-        "listing_id": listing_id,
+        "tender_key": make_tender_key(source_type, listing_id),
+        "source_record_id": listing_id,
         "title": title,
         "category": category,
         "location": location,
         "estimated_value_inr": parse_money(raw.get("value")),
         "emd_inr": parse_money(raw.get("emd")),
+        "published_date": None,
         "closing_date": closing_date,
         "source_url": source_url,
-        "source_type": "Tender247 category listing",
+        "source_type": source_type,
         "raw": raw,
     }
 
@@ -131,9 +157,10 @@ def normalize_mahatenders_row(raw: dict) -> dict:
     closing_date = _excel_date(raw.get("Closing Date"), "closing date", tender_id)
     estimated_value = _excel_amount(raw.get("Estimated Value (INR)"), "estimated value", tender_id)
     emd = _excel_amount(raw.get("EMD (INR)"), "EMD", tender_id)
+    source_type = "MahaTenders official detail page"
     return {
-        "tender_key": tender_id,
-        "listing_id": tender_id,
+        "tender_key": make_tender_key(source_type, tender_id),
+        "source_record_id": tender_id,
         "title": title,
         "category": category,
         "location": location,
@@ -142,7 +169,7 @@ def normalize_mahatenders_row(raw: dict) -> dict:
         "closing_date": closing_date,
         "published_date": published_date,
         "source_url": source_url,
-        "source_type": "MahaTenders official detail page",
+        "source_type": source_type,
         "raw": dict(raw),
     }
 
@@ -218,52 +245,49 @@ def load_records(path: str | Path) -> list[dict]:
     records = [normalize_record(item) for item in payload]
     keys = [record["tender_key"] for record in records]
     if len(keys) != len(set(keys)):
-        raise ValueError("The source file contains duplicate listing IDs")
+        raise ValueError("The source file contains duplicate source record IDs")
     return records
 
 
 def document_for(record: dict) -> dict:
     """Keep variable listing details in MongoDB without inventing missing fields."""
     raw = record["raw"]
+    common = {
+        "_id": record["tender_key"],
+        "source_record_id": record["source_record_id"],
+        "source_type": record["source_type"],
+        "title": record["title"],
+        "category": record["category"],
+        "categories": raw.get("categories") or [record["category"]],
+        "location": record["location"],
+        "published_date": record["published_date"].isoformat() if record["published_date"] else None,
+        "closing_date": record["closing_date"].isoformat(),
+        "estimated_value_inr": _mongo_decimal(record["estimated_value_inr"]),
+        "emd_inr": _mongo_decimal(record["emd_inr"]),
+        "source_url": record["source_url"],
+    }
     if record.get("source_type") == "MahaTenders official detail page":
-        value = record["estimated_value_inr"]
-        emd = record["emd_inr"]
         return {
-            "_id": record["tender_key"],
-            "tender_id": record["listing_id"],
+            **common,
             "reference_no": raw.get("Tender Reference No."),
-            "title": record["title"],
             "organisation": raw.get("Organisation"),
             "department": raw.get("Department / Division"),
-            "categories": [record["category"]],
-            "category": raw.get("Tender Category"),
+            "tender_category": raw.get("Tender Category"),
             "product_category": raw.get("Product Category"),
-            "location": record["location"],
-            "published_date": record["published_date"].isoformat(),
-            "closing_date": record["closing_date"].isoformat(),
             "opening_date": _optional_date_text(raw.get("Opening Date")),
             "portal_status_snapshot": raw.get("Portal Status"),
             "status_collected_on": _optional_date_text(raw.get("Collected On")),
-            "estimated_value_inr": int(value) if value is not None and value == value.to_integral_value() else (float(value) if value is not None else None),
-            "emd_inr": int(emd) if emd is not None and emd == emd.to_integral_value() else (float(emd) if emd is not None else None),
             "tender_fee_inr": raw.get("Tender Fee (INR)"),
             "work_period_days": raw.get("Work Period (Days)"),
             "scope": raw.get("Scope / Work Description"),
             "eligibility": raw.get("Eligibility / Conditions"),
             "corrigendum_snapshot": raw.get("Corrigendum?"),
             "document_names_or_links": raw.get("Document Names / Links"),
-            "source_url": record["source_url"],
-            "source_type": record["source_type"],
             "notes": raw.get("Notes / Missing Fields"),
             "raw_source_row": raw,
         }
     return {
-        "_id": record["tender_key"],
-        "listing_id": record["listing_id"],
-        "listing_text": record["title"],
-        "categories": raw.get("categories") or [record["category"]],
-        "source_url": record["source_url"],
-        "source_type": record.get("source_type", "Tender247 category listing"),
+        **common,
         "raw_value": raw.get("value"),
         "raw_emd": raw.get("emd"),
         "raw_countdown": raw.get("countdown"),

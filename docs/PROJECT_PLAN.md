@@ -2,47 +2,42 @@
 
 This is the team's working plan for finishing and presenting the DCDS mini-project. Status below comes from the files and work log currently available in this repository. It is not a claim that a mark, registration or instructor approval has been confirmed.
 
-## Current checkpoint
+## Canonical work sequence
 
-| Area | Status | Evidence or remaining check |
-|---|---|---|
-| Offline dashboard | Implemented; sample-mode browser check recorded on 11 October | `app.py`, `data/sample_tenders.json`, `docs/WORK_LOG.md` |
-| MySQL schema and query examples | In the repository | `sql/schema.sql`, `sql/queries.sql`; run against the chosen MySQL version before the demo |
-| MongoDB document operations | In the repository | `tender_explorer/mongo_queries.py`; demonstrate CRUD and aggregation on actual project documents |
-| Official workbook mapping | Dry run recorded: 1,572 ready, 2 held, 45 excluded | No MySQL/MongoDB import has been verified; refresh counts if the workbook changes |
-| Database mode | Not verified | Docker and local database ports were unavailable in the 11 October environment check |
-| Source follow-up | Open | Reconcile the older 129-link manifest, the held rows and the title/location discrepancy described in the audit |
-| Course submission details | Needs team/instructor confirmation | Confirm current registered title, team/registration state, schedule and complete rubric |
-| GitHub workflow | Repository uses a short branch and pull-request process | See `CONTRIBUTING.md` for future project changes |
+Use these numbers in project status updates and team discussions. This is the original ordered work list from the Clarify task chat; the assessment topics below are a separate rubric checklist.
 
-## Action plan
-
-| Order | Action | Owner | Done when |
+| Step | Work | Status on 12 October 2026 | Evidence / next action |
 |---:|---|---|---|
-| 1 | Check the final registered project title, current submission requirements and exact evaluation rubric with the team/instructor. Assign a named owner for each area. | Team | The team has one agreed scope, a current rubric copy and named responsibilities. |
-| 2 | Prepare a working Python environment and local MySQL 8/MongoDB 7 services. Keep credentials in the ignored `.env` file. | Setup owner | Sample mode runs, both databases accept a local connection, and database mode can read an imported record. |
-| 3 | Use the reviewed workbook's dry-run plan, then import a deterministic 25-record sample twice. Run the key consistency check after each pass. | Data/database owners | Both stores contain the same expected sample IDs after both runs; held and excluded rows remain accounted for. |
-| 4 | Review every hold and unresolved source issue before deciding what can enter a full import. Refresh the audit against the current workbook. | Data owner | The latest workbook counts, evidence gaps and duplicate decisions are recorded; no unresolved row is silently promoted. |
-| 5 | Load the accepted set only after the sample passes. Save the import output and reconciliation summary without committing raw session-bearing URLs. | Data/database owners | The final accepted count matches in MySQL and MongoDB and can be explained from the saved import plan. |
-| 6 | Rehearse one short examiner-led path in sample mode and one database-backed path if services are available. Keep sample mode as the offline fallback. | Demo owner | A clean run shows filtering, one SQL-backed listing, its matching MongoDB detail, a meaningful query and the source limits. |
-| 7 | Assemble the submission evidence: problem statement, architecture/ER diagram, schema, selected queries, source notes, screenshots or logs, limitations and contribution split. | Whole team | Each rubric area has a concrete artifact or live demonstration and every claim is backed by evidence. |
+| 1 | Check setup and choose how to run the databases. | **Complete; local services restored.** | The earlier 12 October audit records a successful portable setup, but the configured `%LOCALAPPDATA%\DCDS` root and both server processes were absent during the latest check. Reinstalled the project-pinned MySQL 8.4.9 and MongoDB 7.0.28 ZIP servers in a new local data root. Both bind to `127.0.0.1`; `scripts/start_local_databases.ps1` starts them after reboot. |
+| 2 | Confirm the database design and record identity. | **Complete and applied through the pilot import.** | MySQL, MongoDB, importer, dashboard and checker use the same source-prefixed `tender_key`, retain `source_record_id`, and define required/shared fields. The pilot created the current schema and collection validation. See `ARCHITECTURE.md` and the 12 October work-log entry. |
+| 3 | Prepare and check the import source. | **Complete for the current reviewed workbook snapshot; new captures await mapping.** | Fresh offline dry runs report 1,572 ready, rows 9–10 held, 45 excluded, and a deterministic 25-record sample. A separate 127-page capture set is not yet mapped, reviewed or loaded. No database connection was opened during the dry run. Refresh if the workbook or mapped capture set changes. |
+| 4 | Load and reconcile the 25-record pilot. | **Complete.** | Imported the deterministic 25 records twice. `check_data.py` passed after each import; both stores contain the same 25 records. The exact IDs are in `IMPORT_PILOT_IDS_2026-10-12.csv`. |
+| 5 | Load accepted workbook rows. | **Complete and reconciled again.** | Re-imported 1,572 workbook-ready records into both fresh local databases; the checker confirmed 1,572 MySQL rows, 1,572 MongoDB documents and 1,572 source-plan records with matching keys and shared fields. Two rows remain held and 45 `Include? = No` rows remain excluded. |
+| 6 | Demonstrate SQL/MongoDB database work. | **Complete.** | All three SQL examples ran on the 1,572 records. MongoDB read and aggregation ran on project data; create/read/update/delete ran on a temporary document that was removed. 240 accepted records retain a missing estimate as NULL. The location query counts source-reported labels; review them before treating every label as a standardized district. |
+| 7 | Connect and check the dashboard in database mode. | **Database path verified; app opened.** | The dashboard's MySQL listing query returned 1,572 rows; its MongoDB detail lookup found the matching document for the same tender key. Streamlit health returned HTTP 200. Database mode is now the default, with Sample data still available. Saved dashboard screenshots show the verified data but predate the final 12 October interface refinement; refresh them before hand-in. |
+| 8 | Finish hand-in and demo materials. | **In progress; Steps 1–7 are complete. Report draft prepared on 12 October.** | The app/database checks passed and dashboard screenshots plus sanitized SQL/MongoDB outputs are saved under `docs/evidence/`. The editable report is a review draft; all six rendered pages were visually reviewed on 12 October, with no clipping or overlap found. SQL/MongoDB output screenshots, refreshed dashboard screenshots, demo rehearsal, contribution record, and team/instructor confirmation of title, rubric/date and submission format remain. |
 
-The order is deliberate: settle the course requirements and environment, prove a small database load, then decide whether a full load is safe. Do not make the examiner demo depend on scraping a live portal.
+Do not depend on scraping a live portal during the examiner demonstration. Keep the current source snapshot and provenance limits visible in the explanation.
+
+## Other coordination items
+
+- Confirm the registered title and team/registration state, and ask whether the saved rubric is current. Its ESE date is explicitly tentative (26–30 October 2026), and it does not specify a report template or submission format. Confirm the final schedule, format, and named owners with the team/instructor.
+- Continue source follow-up separately: map and review the 127 newly captured official Works pages before any import; reconcile the historical 129-link manifest; review held rows; and resolve the title/location conflict for record #1356 from its official notice document.
+- Broaden the official dataset beyond Works only after the user completes the visible MahaTenders CAPTCHA and clicks Search. The 12 October Electrical Goods/Equipment search plan has no captured results yet; do not treat this as completed diversification.
+- The repository uses a short branch and pull-request process; see `CONTRIBUTING.md`.
 
 ## Map the available rubric topics to project evidence
 
-The prior project-context review records evaluation areas around application design/functionality, Python, SQL and NoSQL integration, advanced queries/data retrieval, code quality/UI, testing, security and error handling. The complete current rubric has not been verified here, so use this as a preparation map and compare it with the official copy.
+The saved four-page DCDS Lab ESE rubric was checked locally on 12 October; the course PDF is not included in this repository. It lists the miniproject as a 10-mark component worth 40%, covering CO1–CO5, with a tentative ESE date of 26–30 October 2026. Confirm with the instructor that this copy and date are still current. The scoring criteria are:
 
-| Evaluation topic | Evidence to prepare |
-|---|---|
-| Application design and functionality | Explain the user flow and show category/search/date filters, summary values, table and detail panel. |
-| Python implementation | Walk through normalization, import planning, database access and Streamlit code. |
-| SQL | Explain keys, foreign keys, lookup tables and indexes; run the join/grouping, subquery and `HAVING` examples. |
-| NoSQL | Explain a source-shaped document keyed by the same tender ID; demonstrate `find_one`, upsert/update/delete and category aggregation. |
-| Integration and retrieval | Show a selected SQL listing and its MongoDB document; run `check_data.py` and explain what a mismatch means. |
-| Code quality and interface | Keep setup reproducible, explain module boundaries, show clear data-source labels and meaningful empty/error states. |
-| Testing | Prepare existing normalization test results plus the 25-record repeat-import and reconciliation evidence. Do not describe the latter as done until it is run. |
-| Security and error handling | Show local-only database ports, ignored `.env`, no session URLs in Git, validation/held-row behavior and database error messages. |
+| Rubric criterion | Maximum | Evidence to prepare |
+|---|---:|---|
+| Application design and functionality | 2 marks | Explain the user flow and show search/filtering, summary values, table, and detail panel. |
+| Python programming implementation | 2 marks | Walk through normalization, import planning, database access, modular code, and Streamlit behavior. |
+| Database integration (SQL and NoSQL) | 2 marks | Show the shared tender key, MySQL listing, matching MongoDB details, and reconciliation. |
+| Advanced database querying and retrieval | 2 marks | Run and explain joins, nested/subqueries, grouping, and MongoDB aggregation. |
+| Code quality, documentation, output presentation and UI | 1 mark | Prepare readable code/docs and clear, meaningful interface output. |
+| Testing, validation, security and error handling | 1 mark | Show import-plan validation, reconciliation, missing/held records, local-only ports, ignored `.env`, and error handling. The repeat-import check is complete; the current suite was rerun on 12 October and all 7 unit tests passed. |
 
 ## Demo outline
 
