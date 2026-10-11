@@ -156,7 +156,12 @@ def build_outputs(
 ) -> tuple[str, str]:
     captured = datetime.now().astimezone().isoformat(timespec="seconds")
     sql_summaries = [
-        ("Category join + grouping", "8 category groups", sql_outputs[0][0], sql_outputs[0][1]),
+        (
+            "Category join + grouping",
+            f"{len(sql_outputs[0][1])} category groups",
+            sql_outputs[0][0],
+            sql_outputs[0][1],
+        ),
         (
             "Above-average estimated value subquery",
             f"{len(sql_outputs[1][1])} matching tenders; first 5 shown",

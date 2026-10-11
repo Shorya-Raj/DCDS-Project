@@ -92,7 +92,15 @@ The collection history, duplicate-review rules, record counts and known gaps are
 | Import consistency check | `tender_explorer/check_data.py` |
 | Source handling and project checkpoints | `docs/DATA_SOURCES.md`, `docs/PROJECT_PLAN.md` |
 
-Saved database-demo evidence is under [`docs/evidence/`](docs/evidence/): two dashboard screenshots and sanitized SQL/MongoDB outputs in Markdown and HTML. The dashboard images predate the final 12 October interface refinement; refreshed screenshots and a query-output screenshot are still needed before submission.
+Saved database-demo evidence is under [`docs/evidence/`](docs/evidence/): two dashboard screenshots and sanitized SQL/MongoDB outputs in Markdown and HTML. These dashboard images show the verified 12 October database run before the final interface refinement; refreshed screenshots and a query-output screenshot are still needed before submission.
+
+![Database-mode dashboard overview](docs/evidence/database_dashboard_overview.jpg)
+
+*Database view from the 12 October verification run. The final interface refinement came later, so this is evidence of the database flow rather than the final presentation layout.*
+
+![MongoDB-backed details for a selected tender](docs/evidence/database_dashboard_mongo_detail.jpg)
+
+*The selected record's source-specific details came from MongoDB using the same tender key as its MySQL listing.*
 
 ## Repository map
 

@@ -2,7 +2,7 @@ param()
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$localRoot = Join-Path $env:USERPROFILE 'AppData\Local\DCDS'
+$localRoot = Join-Path $env:LOCALAPPDATA 'DCDS'
 $mysqlVersion = '8.4.9'
 $mongoVersion = '7.0.28'
 $mysqlFolder = "mysql-$mysqlVersion-winx64"
@@ -37,6 +37,11 @@ foreach ($line in Get-Content -LiteralPath $envFile) {
 foreach ($name in @('MYSQL_ROOT_PASSWORD', 'MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_DATABASE')) {
     if (-not $settings.ContainsKey($name) -or [string]::IsNullOrWhiteSpace($settings[$name])) {
         throw "Required setting $name is missing from project .env"
+    }
+}
+foreach ($name in @('MYSQL_USER', 'MYSQL_DATABASE')) {
+    if ($settings[$name] -notmatch '^[A-Za-z0-9_]+$') {
+        throw "$name must contain only letters, digits, or underscores."
     }
 }
 
