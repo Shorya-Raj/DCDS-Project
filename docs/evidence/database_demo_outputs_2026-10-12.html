@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Database demo results</title><style>
+body{font:16px/1.5 system-ui,sans-serif;max-width:1200px;margin:32px auto;padding:0 24px;color:#172033;background:#f6f8fb}
+h1{font-size:2rem;margin-bottom:4px}h2{margin-top:32px;border-bottom:2px solid #cbd5e1;padding-bottom:6px}
+h3{margin-bottom:4px}.muted{color:#4b5563}.note{background:#e9f2ff;border-left:4px solid #2878c8;padding:12px 16px;margin:16px 0;border-radius:4px}
+section{background:white;border:1px solid #d6dde8;border-radius:10px;padding:18px;margin:16px 0;box-shadow:0 1px 3px #0001}
+table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:8px;text-align:left;vertical-align:top}th{background:#eaf0f7}td{word-break:break-word}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f4f6;padding:12px;border-radius:6px;font-size:13px}details{margin:8px 0}summary{cursor:pointer;color:#1d4ed8}
+</style></head><body>
+<h1>Database demo results</h1>
+<p class="muted">Captured 2026-10-12T02:57:07+05:30. MySQL: <b>1,572</b> records; MongoDB: <b>1,572</b> documents.</p>
+<div class="note">Reconciled to the reviewed workbook source plan. Source URLs and raw workbook rows are excluded from this evidence view.</div>
+<h2>SQL examples</h2>
+<section><h3>SQL 1: Category join + grouping</h3><p>8 category groups</p>
+<details><summary>Show SQL</summary><pre>SELECT c.name AS category, COUNT(*) AS tender_count,
+       SUM(t.estimated_value_inr) AS total_estimated_value_inr
+FROM tenders AS t
+JOIN categories AS c ON c.category_id = t.category_id
+GROUP BY c.category_id, c.name
+ORDER BY tender_count DESC;</pre></details>
+<table><thead><tr><th>category</th><th>tender_count</th><th>total_estimated_value_inr</th></tr></thead><tbody><tr><td>Civil Works</td><td>1344</td><td>23656758121.00</td></tr><tr><td>Civil Works - Others</td><td>90</td><td>413275704.00</td></tr><tr><td>Civil Works - Buildings</td><td>34</td><td>1483975078.00</td></tr><tr><td>Civil Works - Roads</td><td>33</td><td>2506258909.00</td></tr><tr><td>Civil Works - Water Works</td><td>30</td><td>313092940.00</td></tr><tr><td>Electrical and Maintenance Works</td><td>23</td><td>150267604.00</td></tr><tr><td>Construction Works</td><td>13</td><td>9591748.00</td></tr><tr><td>Civil Works - Bridges</td><td>5</td><td>335344097.00</td></tr></tbody></table>
+</section>
+<section><h3>SQL 2: Above-average estimated value subquery</h3><p>75 matching tenders; first 5 shown</p>
+<details><summary>Show SQL</summary><pre>SELECT t.tender_key, t.title, t.estimated_value_inr
+FROM tenders AS t
+WHERE t.estimated_value_inr &gt; (
+    SELECT AVG(estimated_value_inr) FROM tenders
+    WHERE estimated_value_inr IS NOT NULL
+)
+ORDER BY t.estimated_value_inr DESC;</pre></details>
+<table><thead><tr><th>tender_key</th><th>title</th><th>estimated_value_inr</th></tr></thead><tbody><tr><td>mahatenders:2026_TMC_1342205_1</td><td>Design, Engineering, Procurement and Construction (EPC) of 3,084 EWS Dwelling Units with allied Infrastructure, Amenities and Services on land bearing S.No. 15/1 and .No.78, Village Betawade, Thane, under Pradhan Mantri Awas Yojana (Urban) 2.0.</td><td>5120643082.00</td></tr><tr><td>mahatenders:2026_MSIDC_1339226_1</td><td>Plot 1 Vidhanbhavan</td><td>4400000000.00</td></tr><tr><td>mahatenders:2026_MSIDC_1339232_1</td><td>Plot 2 Vidhanbhavan</td><td>2300000000.00</td></tr><tr><td>mahatenders:2026_MMRDA_1336820_1</td><td>ARCHITECTURAL FINISHING INCLUDING DESIGN FABRICATION SUPPLY ERECTION AND ROOF SHEETING OF PEB STRUCTURES AND DESIGN AND CONSTRUCTION OF EXTERNAL FACADE WATER SUPPLY SANITARY INSTALLATION DRAINAGE SITE DEVELOPMENT WORKS AT SIX 06 ELEVATED STATIONS</td><td>1669098609.00</td></tr><tr><td>mahatenders:2026_MMRDA_1336754_1</td><td>ARCHITECTURAL FINISHING INCLUDING DESIGN FABRICATION SUPPLY ERECTION AND ROOF SHEETING OF PEB STRUCTURES AND DESIGN AND CONSTRUCTION OF EXTERNAL FACADE WATER SUPPLY SANITARY INSTALLATION DRAINAGE SITE DEVELOPMENT WORKS AT FIVE 05 ELEVATED STATIONS</td><td>1341059610.00</td></tr></tbody></table>
+</section>
+<section><h3>SQL 3: GROUP BY + HAVING location-label query</h3><p>113 source-reported labels; first 10 shown</p>
+<details><summary>Show SQL</summary><pre>SELECT l.name AS location, COUNT(*) AS tender_count
+FROM tenders AS t
+JOIN locations AS l ON l.location_id = t.location_id
+GROUP BY l.location_id, l.name
+HAVING COUNT(*) &gt;= 3
+ORDER BY tender_count DESC, location;</pre></details>
+<table><thead><tr><th>location</th><th>tender_count</th></tr></thead><tbody><tr><td>Work</td><td>69</td></tr><tr><td>At Nagpur.</td><td>67</td></tr><tr><td>EE/EAST/MSIB</td><td>62</td></tr><tr><td>Under EE/East/MSIB</td><td>53</td></tr><tr><td>DE TURBHE</td><td>39</td></tr><tr><td>NMMC Zone-2 Dep Koparkhairane</td><td>37</td></tr><tr><td>Ahilyanagar</td><td>30</td></tr><tr><td>DE AIROLI</td><td>29</td></tr><tr><td>KW Ward</td><td>27</td></tr><tr><td>DAHISAR (E)</td><td>24</td></tr></tbody></table>
+</section>
+<h2>MongoDB examples</h2>
+<section><h3>Read an imported document</h3><p>Projection omits source URL and raw source row.</p>
+<pre>{
+  &quot;_id&quot;: &quot;mahatenders:2026_NMC_1342575_23&quot;,
+  &quot;source_record_id&quot;: &quot;2026_NMC_1342575_23&quot;,
+  &quot;source_type&quot;: &quot;MahaTenders official detail page&quot;,
+  &quot;title&quot;: &quot;Repairing and Related Work at Vihitgaon Smashanbhoomi Bed P.No.22 in Nashik road Division.&quot;,
+  &quot;category&quot;: &quot;Civil Works&quot;,
+  &quot;location&quot;: &quot;P.No.22 in Nashik road Division&quot;,
+  &quot;scope&quot;: &quot;Repairing and Related Work at Vihitgaon Smashanbhoomi Bed P.No.22 in Nashik road Division.&quot;,
+  &quot;eligibility&quot;: &quot;Please refer Tender documents.&quot;
+}</pre></section>
+<section><h3>Category aggregation (8 groups)</h3><table><thead><tr><th>category</th><th>tender_count</th></tr></thead><tbody><tr><td>Civil Works</td><td>1344</td></tr><tr><td>Civil Works - Others</td><td>90</td></tr><tr><td>Civil Works - Buildings</td><td>34</td></tr><tr><td>Civil Works - Roads</td><td>33</td></tr><tr><td>Civil Works - Water Works</td><td>30</td></tr><tr><td>Electrical and Maintenance Works</td><td>23</td></tr><tr><td>Construction Works</td><td>13</td></tr><tr><td>Civil Works - Bridges</td><td>5</td></tr></tbody></table></section>
+<section><h3>Temporary CRUD check</h3><p>The demo record was removed; no imported tender was changed.</p>
+<table><thead><tr><th>Operation</th><th>Result</th></tr></thead><tbody><tr><td>create</td><td>passed</td></tr><tr><td>read</td><td>passed</td></tr><tr><td>update</td><td>passed</td></tr><tr><td>delete</td><td>passed</td></tr><tr><td>final absence check</td><td>passed</td></tr></tbody></table>
+</section>
+<div class="note">The third SQL query counts source-reported labels. Values such as “Work” and “EE/EAST/MSIB” are not necessarily standardized geographic locations. Estimates are not awards or actual spending; missing estimates stay NULL.</div>
+</body></html>

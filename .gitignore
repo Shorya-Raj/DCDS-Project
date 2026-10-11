@@ -27,3 +27,6 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# Generated report renders and temporary document-review output
+/reports/_docx_render_tmp/
