@@ -39,6 +39,13 @@ Docker and Podman commands are unavailable, WSL is not installed, and ports 3306
 
 This report records the tender collection and merge work that can be substantiated from the saved workbooks, JSONL captures, manifests, validation scripts, and prior task history. It does not claim that every Maharashtra tender published in 2026 was found. No new web scraping was performed to prepare this report.
 
+### Tender book file organization (12 October 2026)
+
+The current workbook is `outputs/01a10826-579d-78f1-b00a-f33d738ff767/01_CURRENT_Maharashtra_Works_TenderBook_Reviewed_2026-10-11.xlsx`. The merged source baseline, Expanded and Combined source workbooks remain alongside it under descriptive names. The file index at `outputs/01a10826-579d-78f1-b00a-f33d738ff767/TENDER_BOOKS_INDEX.md` lists each role, checksum, and archive location.
+
+Four byte-identical recovery copies are in `outputs/01a10826-579d-78f1-b00a-f33d738ff767/Archive/Backup_Copies/`. The two 10 October checkpoints are in `Archive/Checkpoints/`. The earlier 127-lead Tender247-only workbook was removed from the active list and retained in `Archive/Superseded/`: its main fields match the 127 leads in the Expanded workbook, while four raw source-category values differ. Inspection sidecars and the old preview were moved into `Archive/Inspection_Records/`.
+
+These were file-management changes only. The workbook contents and Tender Log rows were not changed, deleted, or merged.
 ## Executive summary
 
 The current workbook contains **1,619 unique Tender Log IDs**. It consists of 1,574 records already in the Maharashtra collection plus 45 new, dated third-party detail records. Sixteen external-source rows were linked to existing Maharashtra tender records and were not added as duplicate log rows. Another 108 external leads without a captured 2026 publication date remain on the `External Sources` audit sheet.
@@ -98,8 +105,8 @@ The page extractor reads the visible detail-page DOM and records raw page fields
 
 The source workbooks preserve the two secondary sources separately before combination:
 
-- `Maharashtra_Work_Tenders_2026_Expanded.xlsx`: 46 TenderShark detail records with a displayed 2026 publication date and 127 Tender247 index leads.
-- `Maharashtra_Work_Tenders_Combined_2026.xlsx`: 169 combined source rows after four defensible Tender247/TenderShark overlaps were represented once while retaining both platforms' identifiers, values and URLs. The four Tender247 listing IDs recorded for those cross-platform matches were `101866252`, `102236361`, `104627883`, and `104513013`.
+- `03_SOURCE_Maharashtra_TenderShark_Tender247_Expanded_2026-10-05.xlsx`: 46 TenderShark detail records with a displayed 2026 publication date and 127 Tender247 index leads.
+- `04_SOURCE_Maharashtra_TenderShark_Tender247_Combined_169_Rows_2026-10-05.xlsx`: 169 combined source rows after four defensible Tender247/TenderShark overlaps were represented once while retaining both platforms' identifiers, values and URLs. The four Tender247 listing IDs recorded for those cross-platform matches were `101866252`, `102236361`, `104627883`, and `104513013`.
 
 The final merge into the main workbook made these decisions:
 
@@ -177,7 +184,7 @@ The remaining-capture verifier was aligned to the final workbook after the third
 6. **Three missing source URLs.** The three rows listed above remain traceability gaps. Do not reconstruct a detail URL from a Tender ID or screenshot.
 7. **Some possible duplicates remain unresolved.** The review flags listed above are not confirmed duplicates. The official collection's record key remains Tender ID; repeated organisation/reference/title text is only a review signal.
 8. **Raw portal links are session-bearing.** Capture URLs include session/query parameters and may not open in another browser or remain valid. This report deliberately omits those full URLs. Redact the session/query values before publishing any raw manifest/capture file to a public repository.
-9. **Repository boundary.** At the time of this 11 October report, the project folder had not yet been initialized as a Git repository. The audit and application are now being prepared for version control; the raw workbooks and capture JSONL files listed below remain outside the repository and are not part of a fresh clone.
+9. **Repository boundary.** At the time of this 11 October report, the project folder had not yet been initialized as a Git repository. The application and audit were added to the private GitHub repository on 12 October; the raw workbooks and capture JSONL files listed below remain outside the repository and are not part of a fresh clone.
 
 ## Evidence inventory and file fingerprints
 
@@ -185,9 +192,10 @@ Paths below are relative to the private parent `DCDS ESE` workspace, not this re
 
 | Evidence artifact | Workspace-relative path | SHA-256 |
 |---|---|---|
-| Final merged workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/Maharashtra_Tender_Data_Collection_Cleared_2026_Updated.xlsx` | `20AF67F70ECE4DFECA9AD9CD7269847712857E391826969343873E2A729547B8` |
-| Combined secondary-source workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/Maharashtra_Work_Tenders_Combined_2026.xlsx` | `3F182E98BA37AF76333B16943F6902072CCC4B666A7C87F8B9A7FDC91049904A` |
-| Expanded pre-combination secondary-source workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/Maharashtra_Work_Tenders_2026_Expanded.xlsx` | `0BE6CEA0E31C0F13DBDB2CD12276F32BE94722C21E812FA9DB4DE4CFC5FC1C74` |
+| Final merged workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/02_BASELINE_Maharashtra_Works_TenderBook_Merged_2026-10-11.xlsx` | `20AF67F70ECE4DFECA9AD9CD7269847712857E391826969343873E2A729547B8` |
+| Latest reviewed working copy | outputs/01a10826-579d-78f1-b00a-f33d738ff767/01_CURRENT_Maharashtra_Works_TenderBook_Reviewed_2026-10-11.xlsx | FAA13CA941E03F94621D1D27B85E9911036CBB6D9A20C00AE89885B0DDEF593A |
+| Combined secondary-source workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/04_SOURCE_Maharashtra_TenderShark_Tender247_Combined_169_Rows_2026-10-05.xlsx` | `3F182E98BA37AF76333B16943F6902072CCC4B666A7C87F8B9A7FDC91049904A` |
+| Expanded pre-combination secondary-source workbook | `outputs/01a10826-579d-78f1-b00a-f33d738ff767/03_SOURCE_Maharashtra_TenderShark_Tender247_Expanded_2026-10-05.xlsx` | `0BE6CEA0E31C0F13DBDB2CD12276F32BE94722C21E812FA9DB4DE4CFC5FC1C74` |
 | 9 October `NEW ↓` URL manifest | `mahatenders-extract/artifacts/2026-10-09-after-new-links.jsonl` | `24F2CB96293FDD29D403282CAFD747FFA8B0C356258C3B48D4D77B6830DFAD76` |
 | 10 October Civil Works 107-URL manifest | `mahatenders-extract/artifacts/2026-10-10-civil-manifest.jsonl` | `A402ABA66758AD149734F03084868C21288C60CE6569A9D4265D58B652878725` |
 | 10 October Civil Works capture, batch 1 | `mahatenders-extract/artifacts/2026-10-10-civil-capture.jsonl` | `F58373A61A6B2FF8E6352C0BCDE8FCE9A464B361DD0E9A55FD7A0B2B1431CFDB` |
