@@ -21,9 +21,10 @@ Do not depend on scraping a live portal during the examiner demonstration. Keep 
 
 ## Other coordination items
 
-- Confirm the registered title and team/registration state, and ask whether the saved rubric is current. Its ESE date is explicitly tentative (26–30 October 2026), and it does not specify a report template or submission format. Confirm the final schedule, format, and named owners with the team/instructor.
-- Continue source follow-up separately: map and review the 127 newly captured official Works pages before any import; reconcile the historical 129-link manifest; review held rows; and resolve the title/location conflict for record #1356 from its official notice document.
-- Broaden the official dataset beyond Works only after the user completes the visible MahaTenders CAPTCHA and clicks Search. The 12 October Electrical Goods/Equipment search plan has no captured results yet; do not treat this as completed diversification.
+- Confirm the registered title and team/registration state, and ask whether the saved rubric is current. Its ESE date is explicitly tentative (26–30 October 2026), and it does not specify a report template or submission format. Confirm the final schedule, format, and named owners with the team/instructor ([GitHub issue #2](https://github.com/Shorya-Raj/DCDS-Project/issues/2)).
+- Map and review the 127 newly captured official Works pages before any import ([issue #8](https://github.com/Shorya-Raj/DCDS-Project/issues/8)). Reconcile the historical 129-link manifest, review held rows, and resolve the title/location conflict for record #1356 from its official notice document ([issue #4](https://github.com/Shorya-Raj/DCDS-Project/issues/4)).
+- Broaden the official dataset beyond Works only after the user completes the visible MahaTenders CAPTCHA and clicks Search. The 12 October Electrical Goods/Equipment search plan has no captured results yet; do not treat this as completed diversification ([issue #9](https://github.com/Shorya-Raj/DCDS-Project/issues/9)).
+- Finalize the report, refresh evidence after the interface refinement, capture query outputs, and rehearse both demo modes ([issue #5](https://github.com/Shorya-Raj/DCDS-Project/issues/5)).
 - The repository uses a short branch and pull-request process; see `CONTRIBUTING.md`.
 
 ## Map the available rubric topics to project evidence

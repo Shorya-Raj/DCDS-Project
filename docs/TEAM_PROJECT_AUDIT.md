@@ -151,13 +151,13 @@ If the source workbook is updated, first run an offline plan with `--dry-run`. D
 
 ## Remaining team work
 
-1. Confirm the registered title and whether the saved rubric is current; its date (26–30 October 2026) is marked tentative. Ask for the final schedule and report/submission format, which are not specified in the saved rubric.
+1. Confirm the registered title and whether the saved rubric is current; its date (26–30 October 2026) is marked tentative. Ask for the final schedule and report/submission format, which are not specified in the saved rubric ([GitHub issue #2](https://github.com/Shorya-Raj/DCDS-Project/issues/2)).
 2. Assign names to the work areas in [`PROJECT_PLAN.md`](PROJECT_PLAN.md); no team member names have been recorded in the project plan yet.
-3. Map and review the 127 newly captured official Works detail pages before any import. They are not yet included in the reviewed workbook or databases. Reconcile the historical 129-link manifest and review the two held rows; do not recreate official detail URLs from IDs or screenshots.
-4. Review record #1356 against its official notice document and record the evidence before changing any source value.
-5. Review the report content and confirm the instructor’s format before finalizing `reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx`; it is a review draft, and all six pages have passed visual layout review. Refresh the dashboard screenshots after the final interface refinement, add screenshots of SQL/MongoDB output examples and rehearse the demo. The existing dashboard images and sanitized text/HTML outputs are saved under `docs/evidence/`.
+3. Map and review the 127 newly captured official Works detail pages before any import. They are not yet included in the reviewed workbook or databases ([GitHub issue #8](https://github.com/Shorya-Raj/DCDS-Project/issues/8)). Reconcile the historical 129-link manifest and review the two held rows ([issue #4](https://github.com/Shorya-Raj/DCDS-Project/issues/4)); do not recreate official detail URLs from IDs or screenshots.
+4. Review record #1356 against its official notice document and record the evidence before changing any source value ([GitHub issue #4](https://github.com/Shorya-Raj/DCDS-Project/issues/4)).
+5. Review the report content and confirm the instructor’s format before finalizing `reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx`; it is a review draft, and all six pages have passed visual layout review. Refresh the dashboard screenshots after the final interface refinement, add screenshots of SQL/MongoDB output examples and rehearse the demo ([GitHub issue #5](https://github.com/Shorya-Raj/DCDS-Project/issues/5)). The existing dashboard images and sanitized text/HTML outputs are saved under `docs/evidence/`.
 6. Make sure every team member can explain the shared key, why SQL and MongoDB are both used in this design, the missing-value rule, and the fact that tender estimates are not actual spending.
-7. Broaden the official dataset beyond Works only after the user completes the visible MahaTenders CAPTCHA and clicks Search. The 12 October Electrical Goods/Equipment query plan has no captured results yet.
+7. Broaden the official dataset beyond Works only after the user completes the visible MahaTenders CAPTCHA and clicks Search. The 12 October Electrical Goods/Equipment query plan has no captured results yet ([GitHub issue #9](https://github.com/Shorya-Raj/DCDS-Project/issues/9)).
 
 ## Project records
 
