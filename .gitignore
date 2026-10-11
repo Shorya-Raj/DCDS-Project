@@ -1,0 +1,29 @@
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local credentials (keep the committed template)
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Local source files and database state
+/data/private/
+/data/raw/
+/outputs/
+*.xlsx
+*.xlsm
+*.sqlite3
+*.db
+*.dump
+
+# Logs and OS/editor files
+*.log
+.DS_Store
+Thumbs.db

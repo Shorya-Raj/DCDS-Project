@@ -1,0 +1,25 @@
+name: Project task
+description: Track one concrete course-project action
+title: ""
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What should be finished?
+      placeholder: A short, observable result
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Completion evidence
+      description: What file, output or demonstration will show this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies or open questions
+    validations:
+      required: false
