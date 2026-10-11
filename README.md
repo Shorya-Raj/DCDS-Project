@@ -20,6 +20,8 @@ Sample mode is the available fallback for a presentation. Database mode needs lo
 Use Python 3.10 or newer. From the repository folder:
 
 ```powershell
+git clone https://github.com/Shorya-Raj/DCDS-Project.git
+cd DCDS-Project
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
@@ -28,6 +30,8 @@ python -m streamlit run app.py
 ```
 
 Choose **Sample data** in the sidebar. No `.env` file or database is needed for this mode.
+
+The existing normalization tests can be run with `python -m unittest discover -s tests -v`. The 11 October work log records seven passing tests; they were not rerun during repository setup.
 
 ## Run with MySQL and MongoDB
 
