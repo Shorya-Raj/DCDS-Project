@@ -13,7 +13,7 @@ This is the team's working plan for finishing and presenting the DCDS mini-proje
 | Database mode | Not verified | Docker and local database ports were unavailable in the 11 October environment check |
 | Source follow-up | Open | Reconcile the older 129-link manifest, the held rows and the title/location discrepancy described in the audit |
 | Course submission details | Needs team/instructor confirmation | Confirm current registered title, team/registration state, schedule and complete rubric |
-| GitHub workflow | Being established in this change | Review and merge the repository foundation PR, then use branches and pull requests |
+| GitHub workflow | Repository foundation is in PR #1 | After it lands, use the branch and pull-request steps in `CONTRIBUTING.md` |
 
 ## Action plan
 
