@@ -10,11 +10,12 @@ This is the chronological record of implementation and verification work. The [t
 - Added setup guidance, an architecture/ER diagram, source-handling notes, an assessment checklist and a team pull-request process.
 - Updated local Compose settings to require passwords from an ignored `.env` file and bind database ports to loopback.
 - Kept the reviewed workbooks and raw capture files outside the repository because official links may contain browser-session query values.
+- Created the `project/repository-foundation` branch and opened PR #1 with the complete project tree.
 
 ### Verification status
 
 - The GitHub repository was confirmed private, with `main` as its default branch and push access for the connected account.
-- The local project directory did not contain Git metadata. This change is being prepared on a GitHub feature branch for review.
+- The local project directory did not contain Git metadata; the files were added to GitHub through the authenticated repository API.
 - No database services, workbook import or tests were run as part of this documentation/repository setup.
 
 ## 11 October 2026 — Import preparation and environment check
