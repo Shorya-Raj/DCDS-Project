@@ -4,11 +4,12 @@ This is a student team repository. Keep changes small enough for a teammate to r
 
 ## Start a change
 
-1. Update your local `main` branch from GitHub.
-2. Create a branch such as `docs/project-plan`, `feat/category-filter` or `fix/import-validation`.
-3. Make one focused change and note any verified project status in `docs/WORK_LOG.md`.
-4. Open a pull request to `main`. Include what changed, how you checked it, and any data or environment limitation.
-5. Ask a teammate to review before merging. Keep course submission claims and source counts tied to evidence.
+1. If you do not have a local checkout, clone the repository using the command in `README.md`.
+2. Update your local `main` branch from GitHub.
+3. Create a branch such as `docs/project-plan`, `feat/category-filter` or `fix/import-validation`.
+4. Make one focused change and note any verified project status in `docs/WORK_LOG.md`.
+5. Open a pull request to `main`. Include what changed, how you checked it, and any data or environment limitation.
+6. Ask a teammate to review before merging. Keep course submission claims and source counts tied to evidence.
 
 ## Commit messages
 
