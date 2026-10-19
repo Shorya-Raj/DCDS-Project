@@ -11,7 +11,7 @@ For the current team status, evidence and hand-in checklist, see the [Team Proje
 - Browse a bundled snapshot of 129 Tender247 category listings without running either database.
 - Compare category counts on a horizontal chart whose count axis starts at zero.
 - Filter by category and source-reported location; search by title, location, or source ID; and optionally hide listings whose closing date has passed.
-- Compare reported estimates, see how many matching rows have an estimate, and refresh cached database data on demand.
+- Compare reported estimates, see how many matching rows have an estimate, and refresh cached filter choices on demand.
 - Inspect the stored source text and open a trusted source page through a link with query parameters and fragments removed. The full captured URL is not shown in the dashboard.
 - Prepare a MySQL and MongoDB import from the sample JSON or a reviewed MahaTenders workbook.
 - Keep the original source ID in `source_record_id`; use `mahatenders:<Tender ID>` or `tender247:<listing-id>` as the shared database key.
@@ -22,6 +22,11 @@ The imported official dataset is still focused on Works notices: 1,572 records a
 
 The editable [project report](reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx) is a review draft, not the final submission. It records the remaining instructor and team confirmations. The [numbered plan](docs/PROJECT_PLAN.md) tracks those tasks.
 
+## Query explorer
+
+In **MySQL + MongoDB** mode, the sidebar filters run a parameterized SQL query. Open the **Query explorer and guide** link in the sidebar to see that query, its bound values, and the MongoDB lookup used for the selected listing. The section also has editable SQL and MongoDB search examples, result tables, and an in-app guide. Searches run only when you press a Run button; custom searches are read only and show at most 100 rows.
+
+The bundled Sample data mode filters its JSON records in Python, so it does not display database queries. See the [Query explorer guide](docs/QUERY_EXPLORER_GUIDE.md) for supported fields, examples, and limits.
 ## Run the sample dashboard
 
 Use Python 3.10 or newer. From the repository folder:

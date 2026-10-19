@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from datetime import date
 from decimal import Decimal
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
@@ -10,6 +11,8 @@ import streamlit as st
 import altair as alt
 
 from tender_explorer.normalize import document_for, load_records
+from tender_explorer.query_tools import filtered_tender_query
+from tender_explorer.query_ui import show_query_explorer
 
 ROOT = Path(__file__).resolve().parent
 SAMPLE = ROOT / "data" / "sample_tenders.json"
@@ -25,17 +28,26 @@ def sample_rows():
 
 
 @st.cache_data(ttl=60)
-def database_rows():
-    from tender_explorer.database import mysql_connection, read_tenders
+def database_filter_options():
+    from tender_explorer.database import mysql_connection, read_filter_options
 
     connection = mysql_connection()
     try:
-        return read_tenders(connection)
+        return read_filter_options(connection)
     finally:
         connection.close()
 
 
-@st.cache_data(ttl=60)
+def database_rows(query: str, params: tuple):
+    from tender_explorer.database import mysql_connection, read_filtered_tenders
+
+    connection = mysql_connection()
+    try:
+        return read_filtered_tenders(connection, query, params)
+    finally:
+        connection.close()
+
+
 def database_detail(tender_key: str):
     from tender_explorer.database import mongo_collection
 
@@ -66,6 +78,7 @@ def sanitized_source_url(raw_url: str) -> tuple[str | None, str]:
 
 
 mode = st.sidebar.radio("Data source", ["Sample data", "MySQL + MongoDB"], index=1)
+st.sidebar.markdown("[Query explorer and guide](#query-explorer)")
 if mode == "Sample data":
     st.info(
         "Sample mode contains 129 Tender247 category listings. These are third-party leads, "
@@ -80,12 +93,16 @@ else:
     )
 
 if mode == "MySQL + MongoDB" and st.sidebar.button("Refresh database data"):
-    database_rows.clear()
-    database_detail.clear()
+    database_filter_options.clear()
     st.rerun()
 
 try:
-    rows = sample_rows() if mode == "Sample data" else database_rows()
+    if mode == "Sample data":
+        source_rows = sample_rows()
+        categories = sorted({row["category"] for row in source_rows})
+        locations = sorted({row["location"] for row in source_rows})
+    else:
+        categories, locations = database_filter_options()
 except Exception as exc:
     st.error(f"Could not load {mode}.")
     if mode == "MySQL + MongoDB":
@@ -93,39 +110,48 @@ except Exception as exc:
     st.caption(f"Diagnostic type: {type(exc).__name__}. Detailed connection errors are hidden to protect local configuration.")
     st.stop()
 
-if not rows:
-    st.warning("No tenders found. Load data first.")
-    st.stop()
-
-categories = sorted({row["category"] for row in rows})
-selected_categories = st.sidebar.multiselect("Category", categories, default=categories)
-locations = sorted({row["location"] for row in rows})
+selected_categories = st.sidebar.multiselect(
+    "Category", categories, default=categories, key=f"category_{mode}"
+)
 selected_locations = st.sidebar.multiselect(
     "Location",
     locations,
     default=[],
+    key=f"location_{mode}",
     help="Choose one or more source-reported location labels. Leave empty to include all locations.",
 )
 search = st.sidebar.text_input("Search title, location, or source ID").strip().casefold()
 only_open = st.sidebar.checkbox("Closing today or later", value=False)
 
-from datetime import date
-
-filtered = [
-    row for row in rows
-    if row["category"] in selected_categories
-    and (not selected_locations or row["location"] in selected_locations)
-    and (
-        not search
-        or search in row["title"].casefold()
-        or search in row["location"].casefold()
-        or search in row["source_record_id"].casefold()
+dashboard_sql = None
+dashboard_params = ()
+if mode == "MySQL + MongoDB":
+    dashboard_sql, dashboard_params = filtered_tender_query(
+        tuple(selected_categories), tuple(categories), tuple(selected_locations),
+        search, only_open, date.today(),
     )
-    and (
-        not only_open
-        or (row["closing_date"] is not None and row["closing_date"] >= date.today())
-    )
-]
+    try:
+        filtered = database_rows(dashboard_sql, dashboard_params)
+    except Exception as exc:
+        st.error("Could not load the filtered MySQL tenders.")
+        st.caption(f"Diagnostic type: {type(exc).__name__}. Check the database service and .env settings.")
+        st.stop()
+else:
+    filtered = [
+        row for row in source_rows
+        if row["category"] in selected_categories
+        and (not selected_locations or row["location"] in selected_locations)
+        and (
+            not search
+            or search in row["title"].casefold()
+            or search in row["location"].casefold()
+            or search in row["source_record_id"].casefold()
+        )
+        and (
+            not only_open
+            or (row["closing_date"] is not None and row["closing_date"] >= date.today())
+        )
+    ]
 
 total_value = sum(
     (row["estimated_value_inr"] or Decimal("0")) for row in filtered
@@ -139,6 +165,7 @@ st.caption("Only reported estimated values contribute to the sum. Blank values s
 
 if not filtered:
     st.warning("No listings match these filters.")
+    show_query_explorer(dashboard_sql, dashboard_params, None, mode)
     st.stop()
 
 counts = Counter(row["category"] for row in filtered)
@@ -246,3 +273,6 @@ with st.expander("About the data model"):
         "Missing source fields remain missing."
     )
 
+
+
+show_query_explorer(dashboard_sql, dashboard_params, selected_key, mode)
