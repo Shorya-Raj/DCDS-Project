@@ -1,8 +1,8 @@
 # Query explorer guide
 
-Open the dashboard, choose **MySQL + MongoDB** in the sidebar, then use the **Query explorer and guide** link. The Query explorer is below the tender details. Open **Queries used by the dashboard** to see the exact SQL used by the current sidebar filters, the values bound to its placeholders, and the MongoDB lookup for the selected listing.
+Open the dashboard, choose **MySQL + MongoDB** in the sidebar, then open the **Query studio** tab. The **Tenders** tab contains the listing selector and detail inspector. Open **Queries used by the dashboard** to see the exact SQL used by the current sidebar filters, the values bound to its placeholders, and the MongoDB lookup for the selected listing.
 
-## Use the sidebar query display
+## Inspect the dashboard query
 
 1. Change Category, Location, Search, or Closing today or later.
 2. Open Queries used by the dashboard.

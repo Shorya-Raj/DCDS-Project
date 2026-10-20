@@ -270,3 +270,11 @@ Next: install a working CPython environment with `requirements.txt`; start MySQL
 - Live SQL examples returned the expected count and category grouping; live MongoDB searches returned one Tender ID match and a capped category result.
 - In the browser, database mode showed 1,572 tenders, the Nashik filter showed 46, both custom search buttons returned rows, the guide displayed the MongoDB operators, and a DELETE statement was rejected without running.
 - Sample mode still showed its 129 bundled listings and explained that its filtering runs in Python. Database mode was restored afterward.
+
+## 20 October 2026 — Interface redesign
+
+- Reorganised the long dashboard into Tenders, Overview, and Query studio workspaces. Search is central; a record inspector sits beside the results on wide screens and below them on narrow screens.
+- Added a local architectural header, summary-card styling, clearer section hierarchy, and a supported Streamlit theme. Following user feedback, replaced white surfaces with muted sage and warm-grey tones.
+- Kept existing database/filter/search behavior, source provenance, sample-mode warning, and source-link sanitization. Updated the README and query guide for the new navigation.
+- All 13 existing tests passed. AppTest verified database record count (1,572), listing selection, Nashik filtering (46), SQL results (20), capped MongoDB results (100), empty filters, and sample mode (129). Browser checks covered tabs, guide, desktop, and narrow-screen layout.
+- Design rationale and research links: docs/INTERFACE_DESIGN.md. Local changes only; no GitHub publishing was performed in this redesign.

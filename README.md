@@ -22,9 +22,13 @@ The imported official dataset is still focused on Works notices: 1,572 records a
 
 The editable [project report](reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx) is a review draft, not the final submission. It records the remaining instructor and team confirmations. The [numbered plan](docs/PROJECT_PLAN.md) tracks those tasks.
 
+## Interface
+
+The app uses three workspaces: **Tenders** for the result table and adjacent record inspector, **Overview** for category distribution and source notes, and **Query studio** for SQL, MongoDB, and the query guide. Search is above the results; source, category, location, and closing-date controls remain in the sidebar. The theme uses muted sage surfaces, dark text, and a forest-green architectural header. See [interface design notes](docs/INTERFACE_DESIGN.md).
+
 ## Query explorer
 
-In **MySQL + MongoDB** mode, the sidebar filters run a parameterized SQL query. Open the **Query explorer and guide** link in the sidebar to see that query, its bound values, and the MongoDB lookup used for the selected listing. The section also has editable SQL and MongoDB search examples, result tables, and an in-app guide. Searches run only when you press a Run button; custom searches are read only and show at most 100 rows.
+In **MySQL + MongoDB** mode, the sidebar filters run a parameterized SQL query. Open the **Query studio** tab to see that query, its bound values, and the MongoDB lookup used for the selected listing. The section also has editable SQL and MongoDB search examples, result tables, and an in-app guide. Searches run only when you press a Run button; custom searches are read only and show at most 100 rows.
 
 The bundled Sample data mode filters its JSON records in Python, so it does not display database queries. See the [Query explorer guide](docs/QUERY_EXPLORER_GUIDE.md) for supported fields, examples, and limits.
 ## Run the sample dashboard

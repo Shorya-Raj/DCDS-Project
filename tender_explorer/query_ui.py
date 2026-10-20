@@ -9,6 +9,7 @@ from urllib.parse import urlparse, urlunparse
 import streamlit as st
 
 from tender_explorer.query_tools import FILTER_OPTIONS_SQL, MONGO_RESULT_FIELDS
+from tender_explorer.presentation import section_label
 
 
 SQL_EXAMPLES = {
@@ -79,7 +80,9 @@ def _show_rows(rows, truncated):
 
 
 def show_query_explorer(dashboard_sql, dashboard_params, selected_key, mode):
+    section_label("03", "Understand the search")
     st.subheader("Query explorer")
+    st.caption("See what runs behind the filters, try your own search, or learn the syntax.")
     if mode == "Sample data":
         st.info(
             "Sample data is filtered in Python from the bundled JSON file. "
@@ -88,7 +91,7 @@ def show_query_explorer(dashboard_sql, dashboard_params, selected_key, mode):
         return
 
     with st.expander("Queries used by the dashboard", expanded=False):
-        st.write("The sidebar filters run this parameterized MySQL query:")
+        st.write("The dashboard filters and search run this parameterized MySQL query:")
         st.code(dashboard_sql, language="sql")
         st.write("Bound values for the %s placeholders, in order:")
         st.json([value.isoformat() if isinstance(value, date) else value for value in dashboard_params])
