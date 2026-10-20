@@ -278,3 +278,10 @@ Next: install a working CPython environment with `requirements.txt`; start MySQL
 - Kept existing database/filter/search behavior, source provenance, sample-mode warning, and source-link sanitization. Updated the README and query guide for the new navigation.
 - All 13 existing tests passed. AppTest verified database record count (1,572), listing selection, Nashik filtering (46), SQL results (20), capped MongoDB results (100), empty filters, and sample mode (129). Browser checks covered tabs, guide, desktop, and narrow-screen layout.
 - Design rationale and research links: docs/INTERFACE_DESIGN.md. Local changes only; no GitHub publishing was performed in this redesign.
+
+## 20 October 2026 — Database recovery and workbook re-import check
+
+- Restarted the local MySQL and MongoDB services after the dashboard could not connect, then re-imported the reviewed workbook into the project databases.
+- The importer loaded 1,572 ready records, left two rows held for missing evidence, and skipped 45 rows marked `Include? = No`.
+- `tender_explorer.check_data --expected-input <reviewed-workbook-path>` confirmed 1,572 MySQL records and 1,572 MongoDB documents, with matching keys and shared fields against the workbook.
+- This records the verified local database state. The reviewed workbook, database files, logs, and `.env` credentials remain outside the repository.
