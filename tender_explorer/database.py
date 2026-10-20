@@ -169,3 +169,66 @@ def read_tenders(connection):
         return cursor.fetchall()
     finally:
         cursor.close()
+
+
+def read_filter_options(connection):
+    """Names for the sidebar controls; these two reads are cached by Streamlit."""
+    from tender_explorer.query_tools import FILTER_OPTIONS_SQL
+
+    cursor = connection.cursor()
+    try:
+        cursor.execute(FILTER_OPTIONS_SQL["categories"])
+        categories = tuple(row[0] for row in cursor.fetchall())
+        cursor.execute(FILTER_OPTIONS_SQL["locations"])
+        locations = tuple(row[0] for row in cursor.fetchall())
+        return categories, locations
+    finally:
+        cursor.close()
+
+
+def read_filtered_tenders(connection, query, params):
+    """Run the displayed, parameterized filter query against MySQL."""
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute(query, params)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+
+
+def run_read_only_sql(query, max_rows=100):
+    """Execute a validated SELECT in a read-only transaction with a time limit."""
+    from tender_explorer.query_tools import validate_sql_query
+
+    query = validate_sql_query(query)
+    connection = mysql_connection()
+    cursor = None
+    try:
+        cursor = connection.cursor(dictionary=True, buffered=True)
+        cursor.execute("SET SESSION max_execution_time = 3000")
+        connection.start_transaction(readonly=True)
+        cursor.execute(query)
+        if not cursor.with_rows:
+            raise ValueError("This query did not return rows.")
+        rows = cursor.fetchmany(max_rows + 1)
+        return rows[:max_rows], len(rows) > max_rows
+    finally:
+        if connection.in_transaction:
+            connection.rollback()
+        if cursor is not None:
+            cursor.close()
+        connection.close()
+
+
+def run_read_only_mongo(filter_text, max_rows=100):
+    """Run a bounded find on the details collection with safe result fields."""
+    from tender_explorer.query_tools import MONGO_RESULT_FIELDS, parse_mongo_filter
+
+    filter_doc = parse_mongo_filter(filter_text)
+    client, collection = mongo_collection()
+    try:
+        projection = {field: 1 for field in MONGO_RESULT_FIELDS}
+        rows = list(collection.find(filter_doc, projection).max_time_ms(3000).limit(max_rows + 1))
+        return rows[:max_rows], len(rows) > max_rows
+    finally:
+        client.close()

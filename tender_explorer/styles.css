@@ -1,0 +1,66 @@
+/* Decorative styling only. Native Streamlit controls retain their interactions. */
+.explorer-hero {
+  display:flex; align-items:center; gap:32px; justify-content:space-between;
+  padding:24px 32px; border-radius:20px; background:#173e35; color:#f6f4eb;
+  position:relative; overflow:hidden; margin-bottom:8px;
+}
+.explorer-hero .eyebrow {font-size:11px; font-weight:700; letter-spacing:2.4px; color:#c2d7b5; margin:0 0 14px;}
+.explorer-hero h1 {font-family:Georgia, 'Times New Roman', serif; color:#fffdf7; font-size:clamp(30px,3.5vw,46px); font-weight:400; line-height:1.12; letter-spacing:-1.4px; padding:0; margin:0 0 16px;}
+.explorer-hero h1 span {color:#d3e3be;}
+.explorer-hero .hero-description {font-size:14px; line-height:1.7; color:#e1e9df; margin-bottom:10px;}
+.hero-nav {display:flex; gap:12px; flex-wrap:wrap;}
+.hero-nav a {border:1px solid #8ca596; border-radius:8px; padding:9px 13px; color:#fffdf7 !important; font-size:13px; text-decoration:none !important; font-weight:600;}
+.hero-nav a:first-child {background:#e1ebcd; border-color:#e1ebcd; color:#173e35 !important;}
+.hero-nav a:hover {box-shadow:0 0 0 2px #b4c6a8;}
+.hero-nav a:focus-visible {outline:3px solid #ffd775; outline-offset:4px;}
+.hero-nav span {margin-left:12px;}
+.blueprint {flex:0 1 330px; min-width:200px; color:#afc7a4; padding:16px; border:1px solid #557565; border-radius:12px; background-image:linear-gradient(#54746133 1px,transparent 1px),linear-gradient(90deg,#54746133 1px,transparent 1px); background-size:22px 22px;}
+.blueprint svg {display:block; width:100%; margin:10px 0;}
+.blueprint-label,.blueprint-caption {font-size:9px; letter-spacing:1.5px; font-family:monospace;}
+.sidebar-brand {display:flex; align-items:center; gap:12px; margin-bottom:28px;}
+.brand-mark {background:#173e35; color:#e1ebcd; font-family:Georgia,serif; font-size:18px; padding:12px 10px; border-radius:10px;}
+.sidebar-brand strong {font-size:17px; display:block;}
+.sidebar-brand small {font-size:10px; letter-spacing:2px; color:#52675e; display:block; margin-top:3px;}
+.section-label {display:flex; align-items:center; gap:10px; margin-top:26px; margin-bottom:2px; color:#61736b; font-size:11px; letter-spacing:1.8px; font-weight:650; text-transform:uppercase;}
+.section-label span {font-family:monospace; background:#e8eddf; color:#355c4b; border-radius:5px; padding:4px 7px; letter-spacing:0;}
+[data-testid="stMainBlockContainer"] {max-width:1480px; padding-top:4.5rem; padding-bottom:4rem;}
+[data-testid="stSidebar"] {border-right:1px solid #dbe0d4;}
+[data-testid="stMetric"] {background:var(--st-secondary-background-color,#F0F2E9); border:1px solid #dbe0d4; border-top:3px solid #789379; border-radius:12px; padding:20px 22px; min-height:122px; box-shadow:0 3px 12px #173e3505;}
+[data-testid="stMetricValue"] {font-variant-numeric:tabular-nums; letter-spacing:-1px;}
+[data-testid="stMetricLabel"] {color:#52675e;}
+[data-testid="stDataFrame"] {border-radius:12px; overflow:hidden; border:1px solid #dbe0d4;}
+[data-testid="stExpander"] {border-radius:12px;}
+[data-testid="stTabs"] [role="tablist"] {gap:20px;}
+[data-testid="stTabs"] [role="tab"] {padding:12px 4px; font-weight:600;}
+[data-testid="stForm"] {border-radius:12px;}
+[data-testid="stTextArea"] textarea {font-family:Consolas,monospace; font-size:14px; line-height:1.6;}
+[data-testid="stHeading"] h3 {letter-spacing:-0.5px;}
+@media (max-width:1000px) {.blueprint {display:none;} .explorer-hero {padding:26px;}}
+@media (max-width:640px) {
+  [data-testid="stMainBlockContainer"] {padding-left:1rem; padding-right:1rem;}
+  .explorer-hero {padding:24px 20px; border-radius:14px;}
+  .explorer-hero h1 {font-size:32px;}
+  [data-testid="stMetric"] {min-height:100px; padding:16px;}
+  [data-testid="stTabs"] [role="tablist"] {gap:12px;}
+}
+.blueprint-art {position:relative; height:155px; margin:12px 0;}
+.blueprint-art .building {position:absolute; bottom:13px; border:1.5px solid #afc7a4; width:18%; background:repeating-linear-gradient(0deg,transparent 0,transparent 15px,#afc7a4 16px,transparent 17px);}
+.blueprint-art .low {left:3%; height:65px;}
+.blueprint-art .tower {left:28%; height:130px;}
+.blueprint-art .mid {left:53%; height:85px;}
+.blueprint-art .high {left:78%; height:108px;}
+.blueprint-art .ground {position:absolute; bottom:5px; left:0; right:0; height:8px; border-top:1.5px solid #afc7a4; border-bottom:1.5px solid #afc7a4;}
+.hero-footnote {font-size:9px; letter-spacing:1.6px; color:#c2d7b5; margin-bottom:0;}
+[data-testid="stMain"] > div [data-testid="stTextInput"] input {font-size:17px; min-height:48px;}
+[data-testid="stTabs"] [role="tablist"] {background:#E8EDDF; border-radius:12px; padding:5px; gap:5px; border:1px solid #d4ddcd;}
+[data-testid="stTabs"] [role="tab"] {border-radius:8px; padding:12px 20px;}
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] {background:#F0F2E9; box-shadow:0 2px 8px #173e3510; color:#20372e;}
+[data-testid="stTabs"] [data-baseweb="tab-highlight"] {background:transparent;}
+[data-testid="stTabs"] [role="tabpanel"] {padding-top:20px;}
+[data-testid="stVerticalBlockBorderWrapper"] {background:var(--st-secondary-background-color,#F0F2E9);}
+[data-testid="stMetric"] {min-height:106px; padding:15px 20px;}
+.section-label {margin-top:8px; margin-bottom:9px;}
+@media (max-width:640px) {
+ [data-testid="stTabs"] [role="tab"] {padding:10px 9px; font-size:13px;}
+ .hero-footnote {display:none;}
+}

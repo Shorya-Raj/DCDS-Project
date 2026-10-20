@@ -1,7 +1,7 @@
 # Team Project Audit Book
 
 **Project:** Maharashtra Works Tender Explorer (working title)  
-**Updated:** 12 October 2026  
+**Updated:** 20 October 2026  
 **Purpose:** Give every team member a plain-language record of what the team built, what was checked, and what still needs to be prepared.
 
 ## How to use this book
@@ -28,9 +28,9 @@ This dataset contains published estimates, not awarded contract values or money 
 | 2 | Confirm the database design and record identity. | **Done** | Importer, schema, dashboard, and checker use the same source-prefixed key. MySQL constraints and MongoDB validation were applied by the pilot import. See [`ARCHITECTURE.md`](ARCHITECTURE.md). |
 | 3 | Prepare and check the import source. | **Done for this workbook snapshot** | The fresh plan found 1,572 accepted records, held Tender Log rows 9–10, and excluded 45 rows marked `Include? = No`. A deterministic 25-record plan was checked without opening a database connection. |
 | 4 | Load and reconcile the 25-record pilot. | **Done** | The same 25 records were imported twice. After each pass, both stores contained 25 records and the consistency check passed. The exact IDs are in [`IMPORT_PILOT_IDS_2026-10-12.csv`](IMPORT_PILOT_IDS_2026-10-12.csv). |
-| 5 | Load accepted workbook rows. | **Done and reconciled again.** | Re-imported 1,572 ready rows from the reviewed workbook. MySQL has 1,572 tenders, MongoDB has 1,572 detail documents, and all IDs and shared fields match the source plan. Two included rows remain held for missing evidence; 45 excluded rows remain out of the import. |
+| 5 | Load accepted workbook rows. | **Done and reconciled again.** | Re-imported 1,572 ready rows from the reviewed workbook. The 20 October re-import after service recovery again passed `check_data`: MySQL and MongoDB each had 1,572 records with matching IDs and shared fields. Two included rows remain held for missing evidence; 45 excluded rows remain out of the import. |
 | 6 | Demonstrate SQL/MongoDB database work. | **Done** | All three SQL examples ran on the imported data. MongoDB read and aggregation ran on project records; create/read/update/delete were demonstrated with a temporary document that was removed. |
-| 7 | Connect and check the dashboard in database mode. | **Verified with the restored databases.** | The dashboard query path returned all 1,572 MySQL rows; a MongoDB detail lookup found the document with the same tender key. Streamlit health returned HTTP 200 and the app is open at `http://127.0.0.1:8501/`. The app now opens in MySQL + MongoDB mode; Sample data remains selectable. Capture refreshed screenshots before hand-in. |
+| 7 | Connect and check the dashboard in database mode. | **Verified with the restored databases.** | The database-mode dashboard and redesigned Tenders, Overview, and Query studio workspaces were checked against 1,572 records. Selecting a tender retrieves its MongoDB details by the shared key. Query studio shows the dashboard's parameterized SQL and MongoDB lookup, and provides capped read-only searches. Sample data remains selectable. Capture refreshed screenshots before hand-in. |
 | 8 | Finish hand-in and demo materials. | **In progress; report draft prepared.** | The report draft is `reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx`. It contains two safe dashboard screenshots; all six pages were rendered and visually reviewed on 12 October, with no clipping or overlap found. Sanitized SQL/MongoDB outputs are saved, but screenshots of those outputs, refreshed dashboard screenshots, rehearsal, contribution record and instructor/team confirmations remain. |
 
 ## Current data snapshot
