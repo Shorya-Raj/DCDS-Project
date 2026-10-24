@@ -13,7 +13,7 @@ import altair as alt
 from tender_explorer.normalize import document_for, load_records
 from tender_explorer.query_tools import filtered_tender_query
 from tender_explorer.query_ui import show_query_explorer
-from tender_explorer.presentation import apply_styles, show_header, show_sidebar_brand, section_label
+from tender_explorer.presentation import apply_styles, show_header, show_sidebar_brand, section_label, tender_card, record_heading, format_money
 
 ROOT = Path(__file__).resolve().parent
 SAMPLE = ROOT / "data" / "sample_tenders.json"
@@ -21,7 +21,7 @@ SAMPLE = ROOT / "data" / "sample_tenders.json"
 st.set_page_config(page_title="Maharashtra Works Tender Explorer", page_icon="🏛️", layout="wide")
 apply_styles()
 show_header()
-show_sidebar_brand()
+
 
 
 @st.cache_data
@@ -79,10 +79,13 @@ def sanitized_source_url(raw_url: str) -> tuple[str | None, str]:
     return safe_url, host
 
 
-mode = st.sidebar.radio("Data source", ["Sample data", "MySQL + MongoDB"], index=1)
-st.sidebar.caption("Use the Query studio tab to inspect or write database searches.")
+source_panel, refresh_panel = st.columns([4, 1], vertical_alignment="bottom")
+with source_panel:
+    mode = st.radio("Data source", ["Sample data", "MySQL + MongoDB"], index=1, horizontal=True)
+with refresh_panel:
+    refresh = st.button("Refresh database data", icon=":material/refresh:", disabled=mode == "Sample data", width="stretch")
 
-if mode == "MySQL + MongoDB" and st.sidebar.button("Refresh database data"):
+if mode == "MySQL + MongoDB" and refresh:
     database_filter_options.clear()
     st.rerun()
 
@@ -100,21 +103,20 @@ except Exception as exc:
     st.caption(f"Diagnostic type: {type(exc).__name__}. Detailed connection errors are hidden to protect local configuration.")
     st.stop()
 
-st.sidebar.divider()
-selected_categories = st.sidebar.multiselect(
-    "Category", categories, default=categories, key=f"category_{mode}"
-)
-selected_locations = st.sidebar.multiselect(
-    "Location",
-    locations,
-    default=[],
-    key=f"location_{mode}",
-    help="Choose one or more source-reported location labels. Leave empty to include all locations.",
-)
+search = st.text_input("Search title, location, or source ID", placeholder="Search by work, place or tender ID…", icon=":material/search:").strip().casefold()
+with st.expander("Refine results · category, location & closing date", expanded=False):
+    category_panel, location_panel = st.columns(2)
+    selected_categories = category_panel.multiselect(
+        "Category", categories, default=categories, key=f"category_{mode}"
+    )
+    selected_locations = location_panel.multiselect(
+        "Location", locations, default=[], key=f"location_{mode}",
+        help="Choose source-reported location labels. Leave empty to include all locations.",
+    )
+    only_open = st.checkbox("Closing today or later", value=False)
+    st.caption("Dates describe the collected snapshot. Empty category selection returns no records.")
 if mode == "Sample data":
     st.info("Sample mode: 129 third-party Tender247 category listings; these are leads, not official tender-detail records.")
-search = st.text_input("Search title, location, or source ID", placeholder="Try a place, a type of work, or a Tender ID...", icon=":material/search:").strip().casefold()
-only_open = st.sidebar.checkbox("Closing today or later", value=False)
 
 dashboard_sql = None
 dashboard_params = ()
@@ -162,11 +164,26 @@ browse_tab, overview_tab, query_tab = st.tabs(
 selected_key = None
 with browse_tab:
     st.subheader("Browse tenders")
-    st.caption("Search on top, refine on the left, and inspect a listing alongside your results.")
+    st.caption("Browse the collection, then open a record to see its source details.")
     if not filtered:
-        st.warning("No listings match these filters.")
+        st.info("No tenders match this search. Try a shorter search or broaden Category, Location and Closing date in Refine results.")
     else:
-        results_panel, detail_panel = st.columns([1.6, 1], gap="large")
+        view_panel, sort_panel = st.columns([2, 1])
+        with view_panel:
+            view = st.radio("Browse as", ["Cards", "Table"], horizontal=True)
+        with sort_panel:
+            sort_order = st.selectbox("Sort records", ["Source order", "Closing soonest", "Highest estimate", "Title A–Z"])
+        display_rows = list(filtered)
+        if sort_order == "Closing soonest":
+            display_rows.sort(key=lambda row: (row["closing_date"] is None, row["closing_date"] or date.max))
+        elif sort_order == "Highest estimate":
+            display_rows.sort(key=lambda row: (row["estimated_value_inr"] is None, -(row["estimated_value_inr"] or Decimal("0"))))
+        elif sort_order == "Title A–Z":
+            display_rows.sort(key=lambda row: row["title"].casefold())
+        labels = {row["tender_key"]: f'{row["source_record_id"]} — {row["title"][:90]}' for row in display_rows}
+        if st.session_state.get("atlas_selected") not in labels:
+            st.session_state["atlas_selected"] = next(iter(labels))
+        results_panel, detail_panel = st.columns([1.7, 1], gap="large")
         with results_panel:
             section_label("01", "Matching records")
             table = [
@@ -179,18 +196,35 @@ with browse_tab:
                     "Estimated value (₹)": row["estimated_value_inr"],
                     "EMD (₹)": row["emd_inr"],
                 }
-                for row in filtered
+                for row in display_rows
             ]
-            st.dataframe(table, width="stretch", height=620, hide_index=True)
+            if view == "Table":
+                st.dataframe(table, width="stretch", height=620, hide_index=True)
+                st.caption("Use the table toolbar to search, show columns, or download CSV. Choose a record in the inspector to read its details.")
+            else:
+                fingerprint = (mode, tuple(selected_categories), tuple(selected_locations), search, only_open, sort_order)
+                if st.session_state.get("atlas_page_filters") != fingerprint:
+                    st.session_state["atlas_page"] = 1
+                    st.session_state["atlas_page_filters"] = fingerprint
+                pages = max(1, (len(display_rows) + 5) // 6)
+                if st.session_state.get("atlas_page", 1) > pages:
+                    st.session_state["atlas_page"] = 1
+                page = int(st.number_input("Page", min_value=1, max_value=pages, step=1, key="atlas_page"))
+                offset = (page - 1) * 6
+                st.caption(f"Records {offset + 1:,}–{min(offset + 6, len(display_rows)):,} of {len(display_rows):,} · Page {page} of {pages}")
+                for start in range(offset, min(offset + 6, len(display_rows)), 2):
+                    card_columns = st.columns(2)
+                    for column, row in zip(card_columns, display_rows[start:start + 2]):
+                        with column, st.container(border=True):
+                            tender_card(row, row["tender_key"] == st.session_state["atlas_selected"])
+                            if st.button("Inspect record", key=f'open_{row["tender_key"]}', width="stretch", help=row["source_record_id"]):
+                                st.session_state["atlas_selected"] = row["tender_key"]
+                                st.rerun()
 
         with detail_panel:
             section_label("02", "Record inspector")
-            with st.container(border=True, height=680):
-                labels = {
-                    row["tender_key"]: f'{row["source_record_id"]} — {row["title"][:90]}'
-                    for row in filtered
-                }
-                selected_key = st.selectbox("Inspect a listing", list(labels), format_func=labels.get)
+            with st.container(border=True):
+                selected_key = st.selectbox("Inspect a listing", list(labels), format_func=labels.get, key="atlas_selected")
                 record = next(row for row in filtered if row["tender_key"] == selected_key)
 
                 if mode == "Sample data":
@@ -203,11 +237,13 @@ with browse_tab:
                         st.caption(f"Diagnostic type: {type(exc).__name__}. Check that MongoDB is running and try refreshing the data.")
                         detail = None
 
-                st.markdown("#### Listing details")
-                st.write(f'**Title:** {record["title"]}')
+                record_heading(record)
+                fact_left, fact_right = st.columns(2)
+                fact_left.metric("Reported estimate", format_money(record["estimated_value_inr"]))
+                fact_right.metric("EMD", format_money(record["emd_inr"]))
                 st.write(f'**Location:** {record["location"]}')
                 st.write(f'**Category:** {record["category"]}')
-                st.write(f'**Closing date:** {record["closing_date"]}')
+                st.write(f'**Closing date:** {record["closing_date"] or "Not reported"}')
                 safe_source_link, host = sanitized_source_url(record["source_url"])
                 if host == "mahatenders.gov.in":
                     source_label = "Official MahaTenders detail page"
@@ -252,7 +288,7 @@ with overview_tab:
         ]
         category_chart = (
             alt.Chart(alt.Data(values=category_data))
-            .mark_bar(color="#3F735C", cornerRadiusEnd=5, size=19)
+            .mark_bar(color="#E5B870", cornerRadiusEnd=4, size=19)
             .encode(
                 x=alt.X(
                     "count:Q",
@@ -273,9 +309,19 @@ with overview_tab:
             )
             .properties(height=max(240, 36 * len(category_data)))
             .configure_view(strokeWidth=0)
-            .configure_axis(gridColor="#E2E7DB", labelColor="#40564A", titleColor="#40564A", labelFontSize=12, titleFontSize=12, domain=False, tickSize=0, labelPadding=10)
+            .configure_axis(gridColor="#454740", labelColor="#CCC9BF", titleColor="#CCC9BF", labelFontSize=12, titleFontSize=12, domain=False, tickSize=0, labelPadding=10)
         )
-        st.altair_chart(category_chart, width="stretch")
+        chart_panel, insight_panel = st.columns([2, 1], gap="large")
+        with chart_panel:
+            st.altair_chart(category_chart, width="stretch")
+        with insight_panel, st.container(border=True):
+            section_label("02", "Reading the collection")
+            top_category, top_count = counts.most_common(1)[0]
+            st.markdown(f"**{top_category}** is the largest category in this selection.")
+            st.metric("Share of matching records", f"{top_count / len(filtered):.1%}")
+            st.metric("Source location labels", f"{len({row['location'] for row in filtered}):,}")
+            st.caption("Location labels are preserved as reported by the source; they are not normalized district counts.")
+            st.caption(f"{len(filtered) - with_value:,} records have no reported estimate. Missing values are excluded from the estimate total.")
 
 
     if mode == "Sample data":

@@ -285,3 +285,12 @@ Next: install a working CPython environment with `requirements.txt`; start MySQL
 - The importer loaded 1,572 ready records, left two rows held for missing evidence, and skipped 45 rows marked `Include? = No`.
 - `tender_explorer.check_data --expected-input <reviewed-workbook-path>` confirmed 1,572 MySQL records and 1,572 MongoDB documents, with matching keys and shared fields against the workbook.
 - This records the verified local database state. The reviewed workbook, database files, logs, and `.env` credentials remain outside the repository.
+
+## 24 October 2026 — Works Atlas interface update
+
+- Reworked the dashboard presentation around the Works Atlas direction: charcoal, ivory, and amber colors, original bridge linework, expandable filters, card and table browsing, six-record pages, and presentation sorting.
+- Kept the existing data paths and project limits: MySQL filtering remains parameterized, MongoDB details use the shared tender key, custom searches stay bounded, and source links remain sanitized.
+- Updated the README, project plan, team audit, and interface notes, and added the UI verification script. The interface notes include a flowchart showing the sample and database paths.
+- Recorded verification from the implementation work: all 13 existing normalization/query-safety tests passed; Streamlit AppTest covered the 1,572-record database view, cards/table, selection, pagination, search/filter/sort cases, SQL and MongoDB searches, sample mode (129), and return to database mode. The health endpoint returned ok.
+- A screenshot-based visual review of this redesign has not been completed. Refresh the dashboard evidence and inspect desktop and narrow-screen layouts before hand-in. The AppTest results are functional checks, not visual proof.
+- No workbook import was run for this interface update. The reviewed workbook, local database files, logs, and credentials remain outside the repository.

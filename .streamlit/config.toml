@@ -1,25 +1,19 @@
 [theme]
-base = "light"
-primaryColor = "#285D4B"
-backgroundColor = "#E8ECE2"
-secondaryBackgroundColor = "#F0F2E9"
-textColor = "#20372E"
-linkColor = "#285D4B"
-borderColor = "#CBD4C6"
-dataframeBorderColor = "#D8DFD2"
-dataframeHeaderBackgroundColor = "#E9EEDF"
-dataframeHeaderTextColor = "#304C3E"
-codeBackgroundColor = "#DDE5D6"
-codeTextColor = "#20372E"
+base = "dark"
+primaryColor = "#E5B870"
+backgroundColor = "#1B1E1B"
+secondaryBackgroundColor = "#292D27"
+textColor = "#EEE9DE"
+linkColor = "#E5B870"
+borderColor = "#454740"
+dataframeBorderColor = "#454740"
+dataframeHeaderBackgroundColor = "#30362E"
+dataframeHeaderTextColor = "#EEE9DE"
+codeBackgroundColor = "#252823"
+codeTextColor = "#EEE9DE"
 font = "sans-serif"
-baseRadius = "0.6rem"
-buttonRadius = "0.5rem"
+baseRadius = "0.5rem"
+buttonRadius = "0.4rem"
 showWidgetBorder = true
 showSidebarBorder = true
-chartCategoricalColors = ["#3F735C", "#789379", "#B49B61", "#697F8B"]
-
-[theme.sidebar]
-backgroundColor = "#DDE5D6"
-secondaryBackgroundColor = "#F0F2E9"
-textColor = "#20372E"
-primaryColor = "#285D4B"
+chartCategoricalColors = ["#E5B870", "#A7BB9C", "#91B4C0", "#C89989"]

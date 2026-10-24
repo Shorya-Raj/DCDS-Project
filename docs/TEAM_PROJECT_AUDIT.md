@@ -1,12 +1,12 @@
 # Team Project Audit Book
 
 **Project:** Maharashtra Works Tender Explorer (working title)  
-**Updated:** 20 October 2026  
+**Updated:** 24 October 2026
 **Purpose:** Give every team member a plain-language record of what the team built, what was checked, and what still needs to be prepared.
 
 ## How to use this book
 
-Use the original numbered sequence below when giving project updates. Steps 1–7 have been completed and rechecked where indicated. Step 8 is in progress; a report draft is prepared for review. The detailed chronological record is in [`WORK_LOG.md`](WORK_LOG.md); this book is the quick team briefing.
+Use the original numbered sequence below when giving project updates. Steps 1–6 are complete for the recorded source snapshot. Step 7 has current functional checks for the Works Atlas interface; screenshot-based visual review is still pending. Step 8 is in progress; a report draft is prepared for review. The detailed chronological record is in [`WORK_LOG.md`](WORK_LOG.md); this book is the quick team briefing.
 
 The words **done**, **pending**, and **needs team confirmation** mean different things. A dry run checks the import plan without writing to a database. A live import writes records. A screenshot or sample-mode run does not prove that database mode works. Each status below says what evidence exists.
 
@@ -30,8 +30,8 @@ This dataset contains published estimates, not awarded contract values or money 
 | 4 | Load and reconcile the 25-record pilot. | **Done** | The same 25 records were imported twice. After each pass, both stores contained 25 records and the consistency check passed. The exact IDs are in [`IMPORT_PILOT_IDS_2026-10-12.csv`](IMPORT_PILOT_IDS_2026-10-12.csv). |
 | 5 | Load accepted workbook rows. | **Done and reconciled again.** | Re-imported 1,572 ready rows from the reviewed workbook. The 20 October re-import after service recovery again passed `check_data`: MySQL and MongoDB each had 1,572 records with matching IDs and shared fields. Two included rows remain held for missing evidence; 45 excluded rows remain out of the import. |
 | 6 | Demonstrate SQL/MongoDB database work. | **Done** | All three SQL examples ran on the imported data. MongoDB read and aggregation ran on project records; create/read/update/delete were demonstrated with a temporary document that was removed. |
-| 7 | Connect and check the dashboard in database mode. | **Verified with the restored databases.** | The database-mode dashboard and redesigned Tenders, Overview, and Query studio workspaces were checked against 1,572 records. Selecting a tender retrieves its MongoDB details by the shared key. Query studio shows the dashboard's parameterized SQL and MongoDB lookup, and provides capped read-only searches. Sample data remains selectable. Capture refreshed screenshots before hand-in. |
-| 8 | Finish hand-in and demo materials. | **In progress; report draft prepared.** | The report draft is `reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx`. It contains two safe dashboard screenshots; all six pages were rendered and visually reviewed on 12 October, with no clipping or overlap found. Sanitized SQL/MongoDB outputs are saved, but screenshots of those outputs, refreshed dashboard screenshots, rehearsal, contribution record and instructor/team confirmations remain. |
+| 7 | Connect and check the dashboard in database mode. | **Functional checks recorded on 24 October; visual review pending.** | [Streamlit AppTest checks](../scripts/verify_atlas_ui.py) covered the Works Atlas card and table views, selection, pagination, filtering, sorting, Query studio searches, sample mode, and return to database mode. The recorded database render contained 1,572 records. The AppTest run is not a screenshot-based layout check; review desktop and narrow-screen screenshots before hand-in. |
+| 8 | Finish hand-in and demo materials. | **In progress; report draft prepared.** | The report draft is [Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx](../reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx). Its six pages were rendered and visually reviewed on 12 October. Existing dashboard screenshots predate the Works Atlas redesign. Sanitized SQL/MongoDB outputs are saved, but updated dashboard screenshots, query-output screenshots, rehearsal, contribution record, and instructor/team confirmations remain. |
 
 ## Current data snapshot
 
@@ -102,7 +102,7 @@ The saved DCDS Lab ESE rubric, reviewed locally on 12 October, lists the minipro
 | SQL and NoSQL integration | 2 | Show MySQL fields linked to the matching MongoDB document through the shared key. |
 | Advanced queries and data retrieval | 2 | Demonstrate SQL joins/subqueries/grouping and MongoDB aggregation. |
 | Code quality, documentation, output and UI | 1 | Present readable modules, project documentation, and clear output. |
-| Testing, validation, security and error handling | 1 | Show source-plan reconciliation, validation, missing/held values, local-only DB ports, ignored `.env`, and error handling. The current unit-test suite was rerun on 12 October: all 7 tests passed. |
+| Testing, validation, security and error handling | 1 | Show source-plan reconciliation, validation, missing/held records, local-only DB ports, ignored .env, and error handling. The current suite had 13 tests, all recorded as passing on 24 October; see [WORK_LOG.md](WORK_LOG.md). |
 
 ## Reproducing the local checks
 

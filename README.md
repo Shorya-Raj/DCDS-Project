@@ -24,13 +24,14 @@ The editable [project report](reports/Maharashtra_Works_Tender_Explorer_Report_2
 
 ## Interface
 
-The app uses three workspaces: **Tenders** for the result table and adjacent record inspector, **Overview** for category distribution and source notes, and **Query studio** for SQL, MongoDB, and the query guide. Search is above the results; source, category, location, and closing-date controls remain in the sidebar. The theme uses muted sage surfaces, dark text, and a forest-green architectural header. See [interface design notes](docs/INTERFACE_DESIGN.md).
+The app uses three workspaces: **Tenders** for cards or a full table with a record inspector, **Overview** for category distribution and source notes, and **Query studio** for SQL, MongoDB, and the query guide. Search sits above the results; the source selector stays in the main workspace, while category, location, and closing-date filters expand on demand. The Works Atlas design uses warm charcoal surfaces, ivory text, amber accents, and original bridge linework. See the [current interface redesign notes](docs/INTERFACE_REDESIGN_2026-10-24.md).
 
 ## Query explorer
 
-In **MySQL + MongoDB** mode, the sidebar filters run a parameterized SQL query. Open the **Query studio** tab to see that query, its bound values, and the MongoDB lookup used for the selected listing. The section also has editable SQL and MongoDB search examples, result tables, and an in-app guide. Searches run only when you press a Run button; custom searches are read only and show at most 100 rows.
+In **MySQL + MongoDB** mode, the filters run a parameterized SQL query. Open the **Query studio** tab to see that query, its bound values, and the MongoDB lookup used for the selected listing. The section also has editable SQL and MongoDB search examples, result tables, and an in-app guide. Searches run only when you press a Run button; custom searches are read only and show at most 100 rows.
 
 The bundled Sample data mode filters its JSON records in Python, so it does not display database queries. See the [Query explorer guide](docs/QUERY_EXPLORER_GUIDE.md) for supported fields, examples, and limits.
+
 ## Run the sample dashboard
 
 Use Python 3.10 or newer. From the repository folder:
@@ -47,7 +48,7 @@ python -m streamlit run app.py
 
 Choose **Sample data** in the sidebar. No `.env` file or database is needed for this mode.
 
-The normalization tests can be run with `python -m unittest discover -s tests -v`. All 7 tests passed on 12 October after the normalization and database changes.
+Run the project checks with `python -m unittest discover -s tests -v`. All 13 normalization and query-safety tests passed on 24 October.
 
 ## Run with MySQL and MongoDB
 
@@ -119,6 +120,7 @@ tender_explorer/         Validation, import, database access, MongoDB examples
 sql/                     MySQL schema and example queries
 data/sample_tenders.json Small sample for offline presentation mode
 tests/                   Existing normalization tests
+scripts/                 Local setup and UI verification helpers
 docs/                    Architecture, data notes, audit and work log
 docs/evidence/           Sanitized dashboard and database-demo evidence
 reports/                 Editable report draft; render scratch files are ignored
