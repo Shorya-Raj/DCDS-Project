@@ -6,7 +6,7 @@ This is the team's working plan for finishing and presenting the DCDS mini-proje
 
 Use these numbers in project status updates and team discussions. This is the original ordered work list from the Clarify task chat; the assessment topics below are a separate rubric checklist.
 
-| Step | Work | Status on 12 October 2026 | Evidence / next action |
+| Step | Work | Status on 24 October 2026 | Evidence / next action |
 |---:|---|---|---|
 | 1 | Check setup and choose how to run the databases. | **Complete; local services restored.** | The earlier 12 October audit records a successful portable setup, but the configured `%LOCALAPPDATA%\DCDS` root and both server processes were absent during the latest check. Reinstalled the project-pinned MySQL 8.4.9 and MongoDB 7.0.28 ZIP servers in a new local data root. Both bind to `127.0.0.1`; `scripts/start_local_databases.ps1` starts them after reboot. |
 | 2 | Confirm the database design and record identity. | **Complete and applied through the pilot import.** | MySQL, MongoDB, importer, dashboard and checker use the same source-prefixed `tender_key`, retain `source_record_id`, and define required/shared fields. The pilot created the current schema and collection validation. See `ARCHITECTURE.md` and the 12 October work-log entry. |
@@ -14,8 +14,8 @@ Use these numbers in project status updates and team discussions. This is the or
 | 4 | Load and reconcile the 25-record pilot. | **Complete.** | Imported the deterministic 25 records twice. `check_data.py` passed after each import; both stores contain the same 25 records. The exact IDs are in `IMPORT_PILOT_IDS_2026-10-12.csv`. |
 | 5 | Load accepted workbook rows. | **Complete and reconciled again.** | Re-imported 1,572 workbook-ready records into both fresh local databases; the checker confirmed 1,572 MySQL rows, 1,572 MongoDB documents and 1,572 source-plan records with matching keys and shared fields. Two rows remain held and 45 `Include? = No` rows remain excluded. |
 | 6 | Demonstrate SQL/MongoDB database work. | **Complete.** | All three SQL examples ran on the 1,572 records. MongoDB read and aggregation ran on project data; create/read/update/delete ran on a temporary document that was removed. 240 accepted records retain a missing estimate as NULL. The location query counts source-reported labels; review them before treating every label as a standardized district. |
-| 7 | Connect and check the dashboard in database mode. | **Database path verified; app opened.** | The dashboard's MySQL listing query returned 1,572 rows; its MongoDB detail lookup found the matching document for the same tender key. Streamlit health returned HTTP 200. Database mode is now the default, with Sample data still available. Saved dashboard screenshots show the verified data but predate the final 12 October interface refinement; refresh them before hand-in. |
-| 8 | Finish hand-in and demo materials. | **In progress; Steps 1–7 are complete. Report draft prepared on 12 October.** | The app/database checks passed and dashboard screenshots plus sanitized SQL/MongoDB outputs are saved under `docs/evidence/`. The editable report is a review draft; all six rendered pages were visually reviewed on 12 October, with no clipping or overlap found. SQL/MongoDB output screenshots, refreshed dashboard screenshots, demo rehearsal, contribution record, and team/instructor confirmation of title, rubric/date and submission format remain. |
+| 7 | Connect and check the dashboard in database mode. | **Functional checks recorded on 24 October; screenshot review pending.** | The [UI verification script](../scripts/verify_atlas_ui.py) used Streamlit AppTest to check the Works Atlas database render (1,572 records), cards, selection, pagination, filtering, sorting, table view, SQL and MongoDB searches, sample mode (129), and return to database mode. This checks app behavior, not visual layout. Capture and review updated desktop and narrow-screen screenshots before hand-in. |
+| 8 | Finish hand-in and demo materials. | **In progress; report draft prepared.** | The editable report is a review draft, and all six rendered pages were visually reviewed on 12 October. Existing dashboard screenshots predate the Works Atlas redesign. SQL/MongoDB output screenshots, refreshed dashboard screenshots, demo rehearsal, contribution record, and team/instructor confirmation of title, rubric/date and submission format remain. |
 
 Do not depend on scraping a live portal during the examiner demonstration. Keep the current source snapshot and provenance limits visible in the explanation.
 
@@ -38,7 +38,7 @@ The saved four-page DCDS Lab ESE rubric was checked locally on 12 October; the c
 | Database integration (SQL and NoSQL) | 2 marks | Show the shared tender key, MySQL listing, matching MongoDB details, and reconciliation. |
 | Advanced database querying and retrieval | 2 marks | Run and explain joins, nested/subqueries, grouping, and MongoDB aggregation. |
 | Code quality, documentation, output presentation and UI | 1 mark | Prepare readable code/docs and clear, meaningful interface output. |
-| Testing, validation, security and error handling | 1 mark | Show import-plan validation, reconciliation, missing/held records, local-only ports, ignored `.env`, and error handling. The repeat-import check is complete; the current suite was rerun on 12 October and all 7 unit tests passed. |
+| Testing, validation, security and error handling | 1 mark | Show import-plan validation, reconciliation, missing/held records, local-only ports, ignored .env, and error handling. The repeat-import check is complete; the current suite had 13 tests, all recorded as passing on 24 October in [WORK_LOG.md](WORK_LOG.md). |
 
 ## Demo outline
 

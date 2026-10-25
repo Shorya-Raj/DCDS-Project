@@ -11,7 +11,7 @@ For the current team status, evidence and hand-in checklist, see the [Team Proje
 - Browse a bundled snapshot of 129 Tender247 category listings without running either database.
 - Compare category counts on a horizontal chart whose count axis starts at zero.
 - Filter by category and source-reported location; search by title, location, or source ID; and optionally hide listings whose closing date has passed.
-- Compare reported estimates, see how many matching rows have an estimate, and refresh cached database data on demand.
+- Compare reported estimates, see how many matching rows have an estimate, and refresh cached filter choices on demand.
 - Inspect the stored source text and open a trusted source page through a link with query parameters and fragments removed. The full captured URL is not shown in the dashboard.
 - Prepare a MySQL and MongoDB import from the sample JSON or a reviewed MahaTenders workbook.
 - Keep the original source ID in `source_record_id`; use `mahatenders:<Tender ID>` or `tender247:<listing-id>` as the shared database key.
@@ -21,6 +21,16 @@ The dashboard opens in MySQL + MongoDB mode when the local setup is available; S
 The imported official dataset is still focused on Works notices: 1,572 records are accepted, two remain held for missing detail-page evidence, and 45 third-party records remain excluded. A further 127 official Works detail pages have been captured for review but are not mapped or loaded. The search for additional official categories is queued at the portal's visible CAPTCHA step; no results have been captured for that search. See the [scraping audit](docs/WEB_SCRAPING_AUDIT.md) and [work log](docs/WORK_LOG.md) for dates, evidence boundaries and next actions.
 
 The editable [project report](reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx) is a review draft, not the final submission. It records the remaining instructor and team confirmations. The [numbered plan](docs/PROJECT_PLAN.md) tracks those tasks.
+
+## Interface
+
+The app uses three workspaces: **Tenders** for cards or a full table with a record inspector, **Overview** for category distribution and source notes, and **Query studio** for SQL, MongoDB, and the query guide. Search sits above the results; the source selector stays in the main workspace, while category, location, and closing-date filters expand on demand. The Works Atlas design uses warm charcoal surfaces, ivory text, amber accents, and original bridge linework. See the [current interface redesign notes](docs/INTERFACE_REDESIGN_2026-10-24.md).
+
+## Query explorer
+
+In **MySQL + MongoDB** mode, the filters run a parameterized SQL query. Open the **Query studio** tab to see that query, its bound values, and the MongoDB lookup used for the selected listing. The section also has editable SQL and MongoDB search examples, result tables, and an in-app guide. Searches run only when you press a Run button; custom searches are read only and show at most 100 rows.
+
+The bundled Sample data mode filters its JSON records in Python, so it does not display database queries. See the [Query explorer guide](docs/QUERY_EXPLORER_GUIDE.md) for supported fields, examples, and limits.
 
 ## Run the sample dashboard
 
@@ -38,7 +48,7 @@ python -m streamlit run app.py
 
 Choose **Sample data** in the sidebar. No `.env` file or database is needed for this mode.
 
-The normalization tests can be run with `python -m unittest discover -s tests -v`. All 7 tests passed on 12 October after the normalization and database changes.
+Run the project checks with `python -m unittest discover -s tests -v`. All 13 normalization and query-safety tests passed on 24 October.
 
 ## Run with MySQL and MongoDB
 
@@ -110,6 +120,7 @@ tender_explorer/         Validation, import, database access, MongoDB examples
 sql/                     MySQL schema and example queries
 data/sample_tenders.json Small sample for offline presentation mode
 tests/                   Existing normalization tests
+scripts/                 Local setup and UI verification helpers
 docs/                    Architecture, data notes, audit and work log
 docs/evidence/           Sanitized dashboard and database-demo evidence
 reports/                 Editable report draft; render scratch files are ignored

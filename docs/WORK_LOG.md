@@ -256,3 +256,41 @@ This is the chronological record of implementation and verification work. The [t
 - No database import has been verified. The database sample, repeat pass, consistency check and full load remain pending.
 
 Next: install a working CPython environment with `requirements.txt`; start MySQL 8 and MongoDB 7 (or Docker); configure local `.env`; run the 25-record import twice and `check_data` after each pass; then import all 1,572 accepted records and reconcile the final counts. Keep rows 9 and 10 held unless exact official evidence is captured, and resolve record #1356 from its notice document.
+
+## 19 October 2026 — Query explorer and live database filters
+
+- Moved the database-mode sidebar filters from Python over a previously loaded table into parameterized MySQL queries. The displayed SQL and bound values now match the actual tender result query; the selected listing's MongoDB find_one lookup is also shown.
+- Added a Query explorer with editable read-only SQL SELECT searches, validated MongoDB JSON find filters, examples, result tables, and an in-app guide. SQL runs in a read-only transaction; both custom searches have a three-second time limit and show at most 100 rows. MongoDB result projection excludes raw source rows and captured source URLs.
+- Added the user guide at docs/QUERY_EXPLORER_GUIDE.md and linked it from the README and dashboard sidebar.
+
+### Verification
+
+- Existing data-normalization tests and new query-safety tests: 13 passed.
+- Six live filter cases returned exactly the same tender keys as the earlier Python-filter behavior, including all 1,572 records, the 1,344 Civil Works records, a 46-row Nashik search, and no-match cases.
+- Live SQL examples returned the expected count and category grouping; live MongoDB searches returned one Tender ID match and a capped category result.
+- In the browser, database mode showed 1,572 tenders, the Nashik filter showed 46, both custom search buttons returned rows, the guide displayed the MongoDB operators, and a DELETE statement was rejected without running.
+- Sample mode still showed its 129 bundled listings and explained that its filtering runs in Python. Database mode was restored afterward.
+
+## 20 October 2026 — Interface redesign
+
+- Reorganised the long dashboard into Tenders, Overview, and Query studio workspaces. Search is central; a record inspector sits beside the results on wide screens and below them on narrow screens.
+- Added a local architectural header, summary-card styling, clearer section hierarchy, and a supported Streamlit theme. Following user feedback, replaced white surfaces with muted sage and warm-grey tones.
+- Kept existing database/filter/search behavior, source provenance, sample-mode warning, and source-link sanitization. Updated the README and query guide for the new navigation.
+- All 13 existing tests passed. AppTest verified database record count (1,572), listing selection, Nashik filtering (46), SQL results (20), capped MongoDB results (100), empty filters, and sample mode (129). Browser checks covered tabs, guide, desktop, and narrow-screen layout.
+- Design rationale and research links: docs/INTERFACE_DESIGN.md. Local changes only; no GitHub publishing was performed in this redesign.
+
+## 20 October 2026 — Database recovery and workbook re-import check
+
+- Restarted the local MySQL and MongoDB services after the dashboard could not connect, then re-imported the reviewed workbook into the project databases.
+- The importer loaded 1,572 ready records, left two rows held for missing evidence, and skipped 45 rows marked `Include? = No`.
+- `tender_explorer.check_data --expected-input <reviewed-workbook-path>` confirmed 1,572 MySQL records and 1,572 MongoDB documents, with matching keys and shared fields against the workbook.
+- This records the verified local database state. The reviewed workbook, database files, logs, and `.env` credentials remain outside the repository.
+
+## 24 October 2026 — Works Atlas interface update
+
+- Reworked the dashboard presentation around the Works Atlas direction: charcoal, ivory, and amber colors, original bridge linework, expandable filters, card and table browsing, six-record pages, and presentation sorting.
+- Kept the existing data paths and project limits: MySQL filtering remains parameterized, MongoDB details use the shared tender key, custom searches stay bounded, and source links remain sanitized.
+- Updated the README, project plan, team audit, and interface notes, and added the UI verification script. The interface notes include a flowchart showing the sample and database paths.
+- Recorded verification from the implementation work: all 13 existing normalization/query-safety tests passed; Streamlit AppTest covered the 1,572-record database view, cards/table, selection, pagination, search/filter/sort cases, SQL and MongoDB searches, sample mode (129), and return to database mode. The health endpoint returned ok.
+- A screenshot-based visual review of this redesign has not been completed. Refresh the dashboard evidence and inspect desktop and narrow-screen layouts before hand-in. The AppTest results are functional checks, not visual proof.
+- No workbook import was run for this interface update. The reviewed workbook, local database files, logs, and credentials remain outside the repository.
