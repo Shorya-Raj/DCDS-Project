@@ -20,6 +20,12 @@ The dashboard opens in MySQL + MongoDB mode when the local setup is available; S
 
 The imported official dataset is still focused on Works notices: 1,572 records are accepted, two remain held for missing detail-page evidence, and 45 third-party records remain excluded. A further 127 official Works detail pages have been captured for review but are not mapped or loaded. The search for additional official categories is queued at the portal's visible CAPTCHA step; no results have been captured for that search. See the [scraping audit](docs/WEB_SCRAPING_AUDIT.md) and [work log](docs/WORK_LOG.md) for dates, evidence boundaries and next actions.
 
+## How we collect tender details
+
+The [MahaTenders extraction guide](skills/mahatenders-extract/GUIDE.md) explains the collection method in plain language. Its [Python scripts and page reader](skills/mahatenders-extract/scripts/) take links supplied in a Word document, open each distinct official detail page in a visible browser, and save the fields shown there as local JSONL. A separate validator checks the captured IDs and links. The [agent skill](skills/mahatenders-extract/SKILL.md) gives future Codex chats the same workflow.
+
+This code collects raw evidence for review; it does not add rows to the workbook or databases. It stops on a CAPTCHA and records pages that do not show a tender ID. The link manifest, raw captures and workbooks stay outside Git because portal URLs can contain session values. Start with a small batch and review the official Tender IDs before importing anything. The [scraping audit](docs/WEB_SCRAPING_AUDIT.md) records what was actually collected and when.
+
 The editable [project report](reports/Maharashtra_Works_Tender_Explorer_Report_2026-10-12.docx) is a review draft, not the final submission. It records the remaining instructor and team confirmations. The [numbered plan](docs/PROJECT_PLAN.md) tracks those tasks.
 
 ## Interface
@@ -121,6 +127,7 @@ sql/                     MySQL schema and example queries
 data/sample_tenders.json Small sample for offline presentation mode
 tests/                   Existing normalization tests
 scripts/                 Local setup and UI verification helpers
+skills/mahatenders-extract/ Reusable tender collection code and guide
 docs/                    Architecture, data notes, audit and work log
 docs/evidence/           Sanitized dashboard and database-demo evidence
 reports/                 Editable report draft; render scratch files are ignored

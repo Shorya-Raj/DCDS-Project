@@ -16,6 +16,7 @@ __pycache__/
 # Local source files and database state
 /data/private/
 /data/raw/
+/skills/mahatenders-extract/artifacts/
 /outputs/
 *.xlsx
 *.xlsm

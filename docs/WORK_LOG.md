@@ -2,6 +2,12 @@
 
 This is the chronological record of implementation and verification work. The [tender-data audit](WEB_SCRAPING_AUDIT.md) holds the source history, workbook counts, provenance decisions and collection limits. Add an entry as each project action is completed.
 
+## 30 October 2026 — Tender extraction code prepared for GitHub
+
+- Added the reusable `skills/mahatenders-extract/` source, a plain-language guide, and a README section. The visible-browser script takes a Word hyperlink manifest, saves raw detail-page fields in small resumable JSONL batches, and stops on a CAPTCHA. It does not write to the workbook or databases.
+- Offline checks covered marker-based link selection, duplicate Word hyperlinks, exact-link retry, CAPTCHA stopping, and resume behavior. The source document produced 336 link occurrences and 319 distinct URLs after `NEW`; this regenerates the historical manifest without publishing those session-bearing URLs. The existing 129-row raw capture passed validation as 127 detail pages, two unavailable links and no pending link unattempted.
+- This code publication is not a new live scrape. The standalone Playwright runner has not yet been tested against the live portal. The dated source and import statuses above remain unchanged.
+
 ## 12 October 2026 — Database restore, full import and app opened
 
 ### What changed
